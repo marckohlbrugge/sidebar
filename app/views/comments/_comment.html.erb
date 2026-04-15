@@ -1,14 +1,13 @@
 <% persona = comment.persona %>
-<li id="<%= dom_id comment %>" class="last:sticky last:top-28">
-  <a href="#<%= dom_id comment.turn %>" class="block p-4 rounded-2xl border-[3px] <%= persona_classes(persona, :border) %> <%= persona_classes(persona, :bg) %> shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition">
-    <blockquote class="text-xs text-gray-500 italic line-clamp-2 mb-3 pl-2 border-l-2 border-gray-300">
-      "<%= comment.turn.text %>"
-    </blockquote>
+<li id="<%= dom_id comment %>"
+    class="comment-row col-start-2 mb-6"
+    style="grid-row: <%= comment.turn_id %>">
+  <a href="#<%= dom_id comment.turn %>" class="block p-4 rounded-2xl border-[3px] <%= persona_classes(persona, :border) %> <%= persona_classes(persona, :bg) %> shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.15)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition">
     <div class="flex items-start gap-3">
-      <%= image_tag "avatars/#{persona&.key}.png", class: "size-12 rounded-xl shrink-0 border-2 border-black" if persona %>
+      <%= image_tag "avatars/#{persona&.key}.png", class: "size-12 rounded-xl shrink-0 border-2 border-black dark:border-gray-100" if persona %>
       <div class="text-base leading-snug">
         <div class="font-black <%= persona_classes(persona, :text) %> mb-1 text-sm uppercase tracking-wide"><%= persona&.display_name || comment.personality.humanize %></div>
-        <div class="text-gray-900 font-medium"><%= comment.body %></div>
+        <div class="text-gray-900 dark:text-gray-100 font-medium"><%= comment.body %></div>
       </div>
     </div>
   </a>

@@ -1,3 +1,6 @@
-<li id="<%= dom_id turn %>" class="text-2xl font-medium leading-snug text-gray-900">
+<% highlight = turn.comments.last&.persona %>
+<li id="<%= dom_id turn %>"
+    class="turn-row text-2xl font-medium leading-snug text-gray-900 dark:text-gray-100 col-start-1 py-3 px-4 rounded-xl -mx-4 <%= persona_classes(highlight, :bg) if highlight %>"
+    style="grid-row: <%= turn.id %>">
   <%= turn.text %>
 </li>

@@ -6,7 +6,7 @@ class Turn < ApplicationRecord
   scope :ordered, -> { order(:finalized_at, :id) }
 
   after_create_commit -> {
-    broadcast_append_to(stream_session, :turns, target: "turns", partial: "turns/turn")
+    broadcast_append_to(stream_session, :timeline, target: "timeline", partial: "turns/turn")
     AnalyzeTurnJob.perform_later(self)
   }
 end

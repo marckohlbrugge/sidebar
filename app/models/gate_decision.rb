@@ -19,6 +19,6 @@ class GateDecision < ApplicationRecord
   end
 
   after_create_commit -> {
-    broadcast_replace_to(turn.stream_session, :turns, target: ActionView::RecordIdentifier.dom_id(turn), partial: "turns/turn", locals: { turn: turn })
+    broadcast_replace_to(turn.stream_session, :timeline, target: ActionView::RecordIdentifier.dom_id(turn), partial: "turns/turn", locals: { turn: turn })
   }
 end

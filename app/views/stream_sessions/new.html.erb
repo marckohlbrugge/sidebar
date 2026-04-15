@@ -1,14 +1,14 @@
 <div class="max-w-xl mx-auto px-6 py-10 space-y-6">
   <div>
-    <%= link_to "← BACK", stream_sessions_path, class: "text-[10px] font-bold uppercase tracking-wider text-gray-500 hover:text-gray-900" %>
+    <%= link_to "← BACK", stream_sessions_path, class: "text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" %>
     <h1 class="text-4xl font-black tracking-tight mt-2">New Session</h1>
-    <p class="text-gray-600 mt-2 font-medium">Drop a YouTube URL — live channel, live video, or a recorded video all work.</p>
+    <p class="text-gray-600 dark:text-gray-300 mt-2 font-medium">Drop a YouTube URL — live channel, live video, or a recorded video all work.</p>
   </div>
 
   <%= form_with model: @session, url: stream_sessions_path, class: "space-y-4" do |f| %>
     <%= f.text_field :youtube_url,
           placeholder: "https://www.youtube.com/@dwnews/live",
-          class: "w-full px-4 py-3 rounded-xl border-[3px] border-black font-medium text-base shadow-[4px_4px_0_0_rgba(0,0,0,1)] focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-none transition" %>
-    <%= f.submit "CREATE", class: "px-5 py-2.5 rounded-xl bg-green-400 text-black font-black text-sm border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition cursor-pointer" %>
+          class: "w-full px-4 py-3 rounded-xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900 font-medium text-base shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.15)] focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-none transition" %>
+    <%= f.submit "CREATE", class: "px-5 py-2.5 rounded-xl bg-green-400 text-black font-black text-sm border-[3px] border-black dark:border-gray-100 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition cursor-pointer" %>
   <% end %>
 </div>

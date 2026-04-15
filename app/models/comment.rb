@@ -3,7 +3,8 @@ class Comment < ApplicationRecord
 
   after_create_commit -> {
     session = turn.stream_session
-    broadcast_append_to(session, :comments, target: "comments", partial: "comments/comment", locals: { comment: self })
+    broadcast_replace_to(session, :timeline, target: ActionView::RecordIdentifier.dom_id(turn), partial: "turns/turn", locals: { turn: turn })
+    broadcast_append_to(session, :timeline, target: "timeline", partial: "comments/comment", locals: { comment: self })
   }
 
   def persona

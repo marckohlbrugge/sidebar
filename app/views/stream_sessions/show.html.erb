@@ -1,40 +1,32 @@
 <%= turbo_stream_from @session, :events %>
-<%= turbo_stream_from @session, :turns %>
-<%= turbo_stream_from @session, :comments %>
+<%= turbo_stream_from @session, :timeline %>
 
 <div data-controller="debug-toggle">
-  <header class="sticky top-0 z-20 bg-white border-b-[3px] border-black">
+  <header class="sticky top-0 z-20 bg-white dark:bg-gray-950 border-b-[3px] border-black dark:border-gray-100">
     <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
       <div class="min-w-0">
-        <%= link_to "← sessions", stream_sessions_path, class: "text-[10px] font-bold uppercase tracking-wider text-gray-500 hover:text-gray-900" %>
+        <%= link_to "← sessions", stream_sessions_path, class: "text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" %>
         <h1 class="text-lg font-black truncate" title="<%= @session.youtube_url %>"><%= @session.youtube_url %></h1>
       </div>
       <div class="flex items-center gap-2 shrink-0">
-        <span class="text-[10px] font-mono text-gray-500 uppercase"><%= @session.status %></span>
+        <span class="text-[10px] font-mono text-gray-500 dark:text-gray-400 uppercase"><%= @session.status %></span>
         <% if @session.process_alive? %>
-          <%= button_to "STOP", stop_stream_session_path(@session), class: "px-4 py-2 rounded-xl bg-red-500 text-white font-black text-xs border-[3px] border-black shadow-[3px_3px_0_0_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
+          <%= button_to "STOP", stop_stream_session_path(@session), class: "px-4 py-2 rounded-xl bg-red-500 text-white font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
         <% else %>
-          <%= button_to "START", start_stream_session_path(@session), class: "px-4 py-2 rounded-xl bg-green-400 text-black font-black text-xs border-[3px] border-black shadow-[3px_3px_0_0_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
+          <%= button_to "START", start_stream_session_path(@session), class: "px-4 py-2 rounded-xl bg-green-400 text-black font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
         <% end %>
-        <button type="button" data-action="debug-toggle#toggle" class="px-3 py-1.5 rounded-lg border-2 border-gray-300 text-[10px] font-bold text-gray-500 hover:bg-gray-50">DEBUG</button>
+        <button type="button" data-action="debug-toggle#toggle" class="px-3 py-1.5 rounded-lg border-2 border-gray-300 dark:border-gray-600 text-[10px] font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800">DEBUG</button>
       </div>
     </div>
   </header>
 
   <main class="max-w-6xl mx-auto px-6 py-6">
-    <div class="grid grid-cols-[minmax(0,1fr)_24rem] gap-x-10 items-stretch">
-      <section>
-        <ul id="turns" class="space-y-6" data-controller="autoscroll">
-          <%= render @turns %>
-        </ul>
-      </section>
-
-      <aside class="h-full">
-        <ul id="comments" class="space-y-4 h-full">
-          <%= render @comments %>
-        </ul>
-      </aside>
-    </div>
+    <ul id="timeline" class="grid grid-cols-[minmax(0,1fr)_24rem] gap-x-10 items-start" data-controller="autoscroll">
+      <% @turns.each do |turn| %>
+        <%= render turn %>
+        <%= render turn.comments %>
+      <% end %>
+    </ul>
 
     <section data-debug-toggle-target="panel" class="hidden space-y-4 mt-8">
       <% if @session.video_id.present? %>

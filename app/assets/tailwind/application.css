@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@layer utilities {
+  /* Only the last comment-row in the timeline stays sticky.
+     Works even with turn-rows interleaved because we only look at
+     sibling .comment-row elements after this one. */
+  .comment-row:not(:has(~ .comment-row)) {
+    position: sticky;
+    top: 7rem;
+  }
+}
