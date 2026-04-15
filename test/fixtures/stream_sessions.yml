@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  youtube_url: MyString
+  status: MyString
+  started_at: 2026-04-15 22:11:40
+  stopped_at: 2026-04-15 22:11:40
+  llm_call_count: 1
+
+two:
+  youtube_url: MyString
+  status: MyString
+  started_at: 2026-04-15 22:11:40
+  stopped_at: 2026-04-15 22:11:40
+  llm_call_count: 1

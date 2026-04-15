@@ -1,0 +1,31 @@
+<div class="max-w-4xl mx-auto px-6 py-8 space-y-6">
+  <header class="flex items-center justify-between">
+    <h1 class="text-4xl font-black tracking-tight">Sidebar</h1>
+    <%= link_to "+ NEW SESSION", new_stream_session_path, class: "px-5 py-2.5 rounded-xl bg-green-400 text-black font-black text-sm border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
+  </header>
+
+  <% if @sessions.empty? %>
+    <div class="p-8 rounded-2xl border-[3px] border-dashed border-gray-300 text-center text-gray-500 font-medium">
+      No sessions yet. Start one.
+    </div>
+  <% else %>
+    <ul class="space-y-4">
+      <% @sessions.each do |s| %>
+        <li class="block">
+          <%= link_to s, class: "block p-4 rounded-2xl border-[3px] border-black bg-white shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" do %>
+            <div class="flex items-center justify-between gap-4">
+              <div class="min-w-0">
+                <div class="font-black text-base truncate"><%= s.youtube_url %></div>
+                <div class="text-[10px] font-mono text-gray-500 uppercase mt-1"><%= s.status %> · <%= l s.created_at, format: :short %></div>
+              </div>
+              <div class="flex items-center gap-3 text-xs font-bold text-gray-600 shrink-0">
+                <span class="px-2 py-1 rounded-md bg-gray-100"><%= s.turns.count %> turns</span>
+                <span class="px-2 py-1 rounded-md bg-gray-100"><%= s.transcript_events.count %> events</span>
+              </div>
+            </div>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</div>

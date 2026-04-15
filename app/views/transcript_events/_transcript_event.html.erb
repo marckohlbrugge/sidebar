@@ -1,0 +1,4 @@
+<li id="<%= dom_id transcript_event %>" class="<%= "text-green-700 font-semibold" if transcript_event.speech_final %><%= " text-gray-400" unless transcript_event.is_final %>">
+  [<%= transcript_event.speech_final ? "SPEECH_FINAL" : (transcript_event.is_final ? "final" : "interim") %>]
+  <%= transcript_event.transcript.to_s.truncate(120) %>
+</li>

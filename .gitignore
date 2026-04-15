@@ -30,6 +30,13 @@
 
 /public/assets
 
+/app/assets/builds/*
+!/app/assets/builds/.keep
+
 # Ignore key files for decrypting credentials and more.
 /config/*.key
+
+
+# Ignore key files for decrypting credentials and more.
+/config/credentials/*.key
 

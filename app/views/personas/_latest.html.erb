@@ -1,0 +1,14 @@
+<div id="latest-comment" class="<%= "rounded-2xl border-[3px] shadow-[6px_6px_0_0_rgba(0,0,0,1)] p-5 #{persona_classes(comment&.persona, :border)} #{persona_classes(comment&.persona, :bg)}" if comment %>">
+  <% if comment %>
+    <% persona = comment.persona %>
+    <div class="flex items-start gap-3">
+      <%= image_tag "avatars/#{persona&.key}.png", class: "size-16 rounded-xl shrink-0 border-2 border-black" if persona %>
+      <div>
+        <div class="font-black <%= persona_classes(persona, :text) %> text-xs uppercase tracking-wider mb-1">Latest · <%= persona&.display_name %></div>
+        <div class="text-lg text-gray-900 font-medium leading-snug"><%= comment.body %></div>
+      </div>
+    </div>
+  <% else %>
+    <div class="text-sm text-gray-400 italic p-4 text-center">waiting for commentary…</div>
+  <% end %>
+</div>

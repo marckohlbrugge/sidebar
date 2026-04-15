@@ -1,0 +1,15 @@
+<% persona = comment.persona %>
+<li id="<%= dom_id comment %>" class="last:sticky last:top-28">
+  <a href="#<%= dom_id comment.turn %>" class="block p-4 rounded-2xl border-[3px] <%= persona_classes(persona, :border) %> <%= persona_classes(persona, :bg) %> shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition">
+    <blockquote class="text-xs text-gray-500 italic line-clamp-2 mb-3 pl-2 border-l-2 border-gray-300">
+      "<%= comment.turn.text %>"
+    </blockquote>
+    <div class="flex items-start gap-3">
+      <%= image_tag "avatars/#{persona&.key}.png", class: "size-12 rounded-xl shrink-0 border-2 border-black" if persona %>
+      <div class="text-base leading-snug">
+        <div class="font-black <%= persona_classes(persona, :text) %> mb-1 text-sm uppercase tracking-wide"><%= persona&.display_name || comment.personality.humanize %></div>
+        <div class="text-gray-900 font-medium"><%= comment.body %></div>
+      </div>
+    </div>
+  </a>
+</li>

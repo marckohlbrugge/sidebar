@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  turn: one
+  action: MyString
+  reason: MyText
+  llm_model: MyString
+
+two:
+  turn: two
+  action: MyString
+  reason: MyText
+  llm_model: MyString

@@ -1,0 +1,14 @@
+<% fresh = latest && latest.created_at > 6.seconds.ago %>
+<div id="persona-<%= persona.key %>" class="flex flex-col items-center gap-2 min-w-20">
+  <div class="relative">
+    <div class="size-20 rounded-2xl overflow-hidden border-[3px] <%= persona_classes(persona, :border) %> <%= "ring-4 ring-offset-2 #{persona_classes(persona, :ring)}" if fresh %> shadow-[4px_4px_0_0_rgba(0,0,0,1)] bg-white">
+      <%= image_tag "avatars/#{persona.key}.png", class: "size-full object-cover" %>
+    </div>
+    <% if fresh %>
+      <svg class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-16 h-4 <%= persona_classes(persona, :wave) %> animate-pulse" viewBox="0 0 40 12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+        <path d="M1 6 Q5 1 10 6 T19 6 T28 6 T38 6" />
+      </svg>
+    <% end %>
+  </div>
+  <div class="text-sm font-black text-gray-900"><%= persona.display_name %></div>
+</div>

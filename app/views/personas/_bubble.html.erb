@@ -1,0 +1,20 @@
+<% fresh = latest && latest.created_at > 6.seconds.ago %>
+<div id="persona-<%= persona.key %>" class="rounded-xl border bg-white p-3 flex flex-col gap-2 <%= "ring-2 ring-amber-400" if fresh %>">
+  <div class="flex items-center gap-2">
+    <div class="relative size-10 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center text-xl">
+      <%= image_tag "avatars/#{persona.key}.png", class: "size-10 object-cover" %>
+    </div>
+    <div class="flex-1">
+      <div class="font-semibold text-sm"><%= persona.display_name %></div>
+      <div class="text-[11px] text-gray-400 uppercase tracking-wide"><%= persona.key.humanize %></div>
+    </div>
+    <% if fresh %>
+      <svg class="w-8 h-4 text-amber-500 animate-pulse" viewBox="0 0 40 16" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M0 8 Q5 0 10 8 T20 8 T30 8 T40 8" />
+      </svg>
+    <% end %>
+  </div>
+  <div class="text-sm text-gray-800 min-h-[2.5em]">
+    <%= latest&.body || content_tag(:span, "…", class: "text-gray-300") %>
+  </div>
+</div>
