@@ -1,4 +1,4 @@
-<ul id="timeline" class="grid grid-cols-[minmax(0,1fr)_24rem] gap-x-10 items-start">
+<ul id="timeline" class="grid grid-cols-[minmax(0,1fr)_24rem] gap-x-10 items-start <%= "replay-pending" if local_assigns[:autoplay] %>">
   <% turns.each do |turn| %>
     <%= render partial: "turns/turn", locals: { turn: turn } %>
     <%= render partial: "comments/comment", collection: turn.comments, as: :comment %>

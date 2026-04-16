@@ -16,10 +16,7 @@ export default class extends Controller {
 
   connect() {
     this.timeouts = []
-    if (this.autoplayValue) {
-      // Defer so Turbo stream-from and target registration settle.
-      setTimeout(() => this.start(), 200)
-    }
+    if (this.autoplayValue) this.start()
   }
 
   disconnect() {
@@ -33,6 +30,7 @@ export default class extends Controller {
       Number(a.dataset.showAtMs) - Number(b.dataset.showAtMs)
     )
     items.forEach((el) => el.classList.add("hidden"))
+    document.getElementById("timeline")?.classList.remove("replay-pending")
     this.#stripAllHighlights()
     window.scrollTo({ top: 0, behavior: "smooth" })
 

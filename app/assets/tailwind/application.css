@@ -12,4 +12,11 @@ html {
     position: sticky;
     top: 7rem;
   }
+
+  /* Server renders #timeline with .replay-pending when autoplay is
+     requested. Hides everything until the replay controller takes
+     over and removes the class — prevents a flash of full content. */
+  .replay-pending > li {
+    display: none;
+  }
 }
