@@ -76,4 +76,4 @@ Ingest runs as a detached subprocess per session so the web stays responsive. St
 
 ## License
 
-MIT.
+Armchair is released under the [O'Saasy License](LICENSE.md).
