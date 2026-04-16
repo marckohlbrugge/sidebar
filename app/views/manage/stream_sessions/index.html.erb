@@ -12,8 +12,8 @@
   <% else %>
     <ul class="space-y-4">
       <% @sessions.each do |s| %>
-        <li class="block">
-          <%= link_to [ :manage, s ], class: "block p-4 rounded-2xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.15)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" do %>
+        <li class="flex items-center gap-3">
+          <%= link_to [ :manage, s ], class: "block flex-1 p-4 rounded-2xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.15)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" do %>
             <div class="flex items-center justify-between gap-4">
               <div class="min-w-0">
                 <div class="font-black text-base truncate"><%= s.youtube_url %></div>
@@ -25,6 +25,8 @@
               </div>
             </div>
           <% end %>
+          <%= link_to "EDIT", edit_manage_stream_session_path(s), class: "px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-black dark:text-white font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition shrink-0" %>
+          <%= button_to "DELETE", manage_stream_session_path(s), method: :delete, data: { turbo_confirm: "Delete this session and all of its turns/comments/events?" }, class: "px-3 py-2 rounded-xl bg-red-500 text-white font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition shrink-0" %>
         </li>
       <% end %>
     </ul>

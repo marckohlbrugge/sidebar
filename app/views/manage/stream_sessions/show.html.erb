@@ -15,6 +15,7 @@
         </div>
       </div>
       <div class="flex items-center gap-2 shrink-0">
+        <%= link_to "EDIT", edit_manage_stream_session_path(@session), class: "px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-black dark:text-white font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
         <% if @session.process_alive? %>
           <%= button_to "STOP", manage_stream_session_ingest_path(@session), method: :delete, class: "px-4 py-2 rounded-xl bg-red-500 text-white font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
         <% end %>

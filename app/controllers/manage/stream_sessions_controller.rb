@@ -1,5 +1,5 @@
 class Manage::StreamSessionsController < Manage::BaseController
-  before_action :set_session, only: :show
+  before_action :set_session, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @sessions = StreamSession.order(created_at: :desc)
@@ -18,6 +18,20 @@ class Manage::StreamSessionsController < Manage::BaseController
     @session = StreamSession.create!(session_params)
     @session.spawn_ingest!
     redirect_to [ :manage, @session ]
+  end
+
+  def edit
+  end
+
+  def update
+    @session.update!(session_params)
+    redirect_to [ :manage, @session ]
+  end
+
+  def destroy
+    @session.stop_ingest! if @session.process_alive?
+    @session.destroy!
+    redirect_to manage_stream_sessions_path
   end
 
   private
