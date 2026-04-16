@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_16_102251) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_16_110101) do
   create_table "comments", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -171,10 +171,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_102251) do
     t.datetime "started_at"
     t.string "status", default: "idle", null: false
     t.datetime "stopped_at"
+    t.string "token"
     t.datetime "updated_at", null: false
     t.string "video_id"
     t.string "youtube_url", null: false
     t.index ["demo"], name: "index_stream_sessions_on_demo", where: "demo = 1"
+    t.index ["token"], name: "index_stream_sessions_on_token", unique: true
   end
 
   create_table "transcript_events", force: :cascade do |t|

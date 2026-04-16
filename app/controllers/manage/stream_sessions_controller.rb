@@ -23,7 +23,7 @@ class Manage::StreamSessionsController < Manage::BaseController
   private
 
   def set_session
-    @session = StreamSession.find(params[:id])
+    @session = StreamSession.find_by!(token: params[:id])
   end
 
   def session_params
