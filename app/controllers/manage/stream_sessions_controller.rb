@@ -1,4 +1,4 @@
-class Manage::StreamSessionsController < ApplicationController
+class Manage::StreamSessionsController < Manage::BaseController
   before_action :set_session, only: :show
 
   def index

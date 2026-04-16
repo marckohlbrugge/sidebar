@@ -1,4 +1,4 @@
-class Manage::IngestsController < ApplicationController
+class Manage::IngestsController < Manage::BaseController
   include Manage::StreamSessionScoped
 
   def destroy

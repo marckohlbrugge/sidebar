@@ -1,4 +1,4 @@
-class Manage::DemosController < ApplicationController
+class Manage::DemosController < Manage::BaseController
   include Manage::StreamSessionScoped
 
   def create

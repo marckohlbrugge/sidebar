@@ -1,9 +1,7 @@
-<div class="max-w-4xl mx-auto px-6 py-8 space-y-6">
+<div class="max-w-4xl mx-auto px-6 py-6 space-y-6">
+  <%= render "shared/brand" %>
   <header class="flex items-center justify-between">
-    <div>
-      <%= link_to "← home", root_path, class: "text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" %>
-      <h1 class="text-4xl font-black tracking-tight mt-1">Manage</h1>
-    </div>
+    <h1 class="text-4xl font-black tracking-tight">Manage</h1>
     <%= link_to "+ NEW SESSION", new_manage_stream_session_path, class: "px-5 py-2.5 rounded-xl bg-green-400 text-black font-black text-sm border-[3px] border-black dark:border-gray-100 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
   </header>
 

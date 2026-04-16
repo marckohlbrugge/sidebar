@@ -3,15 +3,18 @@
 <div data-controller="replay autoscroll highlighter" data-replay-autoplay-value="<%= @autoplay_replay %>">
   <header class="sticky top-0 z-20 bg-white dark:bg-gray-950 border-b-[3px] border-black dark:border-gray-100">
     <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
-      <div class="min-w-0">
-        <%= link_to "← home", root_path, class: "text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" %>
-        <h1 class="text-lg font-black truncate" title="<%= @session.youtube_url %>"><%= @session.youtube_url %></h1>
-        <div class="text-[10px] font-mono text-gray-500 dark:text-gray-400 uppercase mt-0.5">
-          <% if @session.status == "running" %>
-            live
-          <% elsif @session.stopped_at %>
-            ended <%= time_ago_in_words(@session.stopped_at) %> ago
-          <% end %>
+      <div class="min-w-0 flex items-center gap-3">
+        <%= render "shared/brand" %>
+        <span class="text-gray-300 dark:text-gray-700">/</span>
+        <div class="min-w-0">
+          <h1 class="text-base font-black truncate max-w-sm" title="<%= @session.youtube_url %>"><%= @session.youtube_url.sub(%r{^https?://(www\.)?}, "") %></h1>
+          <div class="text-[10px] font-mono text-gray-500 dark:text-gray-400 uppercase">
+            <% if @session.running? %>
+              live
+            <% elsif @session.stopped_at %>
+              ended <%= time_ago_in_words(@session.stopped_at) %> ago
+            <% end %>
+          </div>
         </div>
       </div>
       <div class="flex items-center gap-2 shrink-0">

@@ -4,9 +4,12 @@
 <div data-controller="replay autoscroll debug-toggle highlighter">
   <header class="sticky top-0 z-20 bg-white dark:bg-gray-950 border-b-[3px] border-black dark:border-gray-100">
     <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
-      <div class="min-w-0">
-        <%= link_to "← manage", manage_stream_sessions_path, class: "text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" %>
-        <h1 class="text-lg font-black truncate" title="<%= @session.youtube_url %>"><%= @session.youtube_url %></h1>
+      <div class="min-w-0 flex items-center gap-3">
+        <%= render "shared/brand" %>
+        <span class="text-gray-300 dark:text-gray-700">/</span>
+        <%= link_to "manage", manage_stream_sessions_path, class: "text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" %>
+        <span class="text-gray-300 dark:text-gray-700">/</span>
+        <h1 class="text-base font-black truncate max-w-sm" title="<%= @session.youtube_url %>"><%= @session.youtube_url.sub(%r{^https?://(www\.)?}, "") %></h1>
         <div class="text-[10px] font-mono text-gray-500 dark:text-gray-400 uppercase mt-0.5">
           <%= @session.status %><%= " · pid #{@session.pid}" if @session.process_alive? %>
         </div>
