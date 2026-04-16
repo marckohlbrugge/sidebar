@@ -25,6 +25,7 @@ class StreamSession::Ingest
 
       ws.on :close do |event|
         log "deepgram closed: #{event.code}"
+        @turns.flush!
         audio_io&.close
         pump&.kill
         @session.update!(status: "stopped", stopped_at: Time.current)

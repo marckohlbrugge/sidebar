@@ -27,7 +27,7 @@ class StreamSession::BrowserIngest
     @browser.on(:close) do
       EM.schedule do
         @deepgram&.send({ type: "CloseStream" }.to_json) rescue nil
-        @deepgram&.close
+        # Deepgram finalizes any in-flight utterance and then closes on its own.
       end
     end
   end
@@ -39,6 +39,7 @@ class StreamSession::BrowserIngest
   end
 
   def cleanup
+    @turns.flush!
     ActiveRecord::Base.connection_pool.with_connection do
       @session.update!(status: "stopped", stopped_at: Time.current)
     end

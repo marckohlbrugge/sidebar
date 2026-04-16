@@ -20,6 +20,11 @@ class StreamSession::TurnBuilder
     nil
   end
 
+  def flush!
+    return unless @buffer.any?
+    ActiveRecord::Base.connection_pool.with_connection { close! }
+  end
+
   private
 
   def advance(data)

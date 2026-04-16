@@ -10,7 +10,12 @@
     <div class="flex items-start gap-3">
       <%= image_tag "avatars/#{persona&.key}.png", class: "size-12 rounded-xl shrink-0 border-2 border-black dark:border-gray-100" if persona %>
       <div class="text-base leading-snug">
-        <div class="font-black <%= persona_classes(persona, :text) %> mb-1 text-sm uppercase tracking-wide"><%= persona&.display_name || comment.personality.humanize %></div>
+        <div class="font-black <%= persona_classes(persona, :text) %> mb-1 text-sm uppercase tracking-wide flex items-center gap-1.5">
+          <%= persona&.display_name || comment.personality.humanize %>
+          <% if comment.grounded? %>
+            <span title="Grounded in a live web search" class="text-xs normal-case tracking-normal font-semibold opacity-70">🌐</span>
+          <% end %>
+        </div>
         <div class="text-gray-900 dark:text-gray-100 font-medium"><%= comment.body %></div>
       </div>
     </div>

@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_16_210951) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_16_213450) do
   create_table "comments", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
+    t.boolean "grounded", default: false, null: false
     t.string "llm_model"
     t.string "personality"
     t.integer "turn_id", null: false
