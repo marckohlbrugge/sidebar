@@ -1,3 +1,5 @@
+<% content_for :title, "#{@session.youtube_url.sub(%r{^https?://(www\.)?}, "")}" %>
+<% content_for :og_image, ("https://i.ytimg.com/vi/#{@session.video_id}/maxresdefault.jpg" if @session.video_id.present?) %>
 <%= turbo_stream_from @session, :timeline %>
 
 <div data-controller="replay autoscroll highlighter"

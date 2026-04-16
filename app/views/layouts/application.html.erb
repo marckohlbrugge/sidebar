@@ -1,11 +1,27 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Armchair" %></title>
+    <% page_title = content_for?(:title) ? "#{content_for(:title)} · Armchair" : "Armchair" %>
+    <% page_description = content_for?(:description) ? content_for(:description) : "A real-time AI sidebar for live podcasts — four armchair critics watching and chiming in." %>
+    <% page_image = content_for?(:og_image) ? content_for(:og_image) : image_url("icon.png") %>
+
+    <title><%= page_title %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Armchair">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="description" content="<%= page_description %>">
+
+    <meta property="og:title" content="<%= page_title %>">
+    <meta property="og:description" content="<%= page_description %>">
+    <meta property="og:image" content="<%= page_image %>">
+    <meta property="og:type" content="website">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<%= page_title %>">
+    <meta name="twitter:description" content="<%= page_description %>">
+    <meta name="twitter:image" content="<%= page_image %>">
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
