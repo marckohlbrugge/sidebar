@@ -12,6 +12,6 @@ class Comment < ApplicationRecord
   end
 
   def replay_offset_ms
-    ((created_at - stream_session.replay_origin) * 1000).to_i
+    turn.audio_end_ms || ((created_at - stream_session.replay_origin) * 1000).to_i
   end
 end

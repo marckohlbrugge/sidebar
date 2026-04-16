@@ -66,8 +66,11 @@ class StreamSession::Ingest
   end
 
   def open_audio_pipe(stream_url)
+    # Live: -re paces ffmpeg to realtime.
+    # Recorded: skip -re so we transcribe as fast as Deepgram can process.
+    pacing = @session.live? ? "-re" : ""
     cmd = %(ffmpeg -hide_banner -nostdin -loglevel fatal \
-      -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5 -re \
+      -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5 #{pacing} \
       -i #{stream_url.shellescape} \
       -f s16le -acodec pcm_s16le -ac 1 -ar 16000 pipe:1).gsub(/\s+/, " ")
     IO.popen(cmd, "rb")
@@ -103,6 +106,8 @@ class StreamSession::Ingest
     if data["is_final"]
       @turn_buffer << text
       @turn_started_at ||= Time.current
+      @audio_start_ms ||= ((data["start"] || 0) * 1000).to_i
+      @audio_end_ms = (((data["start"] || 0) + (data["duration"] || 0)) * 1000).to_i
     end
 
     return unless @turn_buffer.any?
@@ -120,11 +125,15 @@ class StreamSession::Ingest
       text: @turn_buffer.join(" "),
       started_at: @turn_started_at,
       ended_at: Time.current,
-      finalized_at: Time.current
+      finalized_at: Time.current,
+      audio_start_ms: @audio_start_ms,
+      audio_end_ms: @audio_end_ms
     )
-    log "turn closed: #{@turn_buffer.join(" ")}"
+    log "turn closed (#{@audio_start_ms}–#{@audio_end_ms}ms): #{@turn_buffer.join(" ")}"
     @turn_buffer = []
     @turn_started_at = nil
+    @audio_start_ms = nil
+    @audio_end_ms = nil
   end
 
   def log(msg)

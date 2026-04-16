@@ -1,6 +1,8 @@
 <%= turbo_stream_from @session, :timeline %>
 
-<div data-controller="replay autoscroll highlighter" data-replay-autoplay-value="<%= @autoplay_replay %>">
+<div data-controller="replay autoscroll highlighter"
+     data-replay-autoplay-value="<%= @autoplay_replay %>"
+     data-replay-video-id-value="<%= @session.video_id %>">
   <header class="sticky top-0 z-20 bg-white dark:bg-gray-950 border-b-[3px] border-black dark:border-gray-100">
     <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
       <div class="min-w-0 flex items-center gap-3">
@@ -25,7 +27,13 @@
     </div>
   </header>
 
-  <main class="max-w-6xl mx-auto px-6 py-6">
+  <main class="max-w-6xl mx-auto px-6 py-6 space-y-6">
+    <% if @session.video_id.present? %>
+      <div class="aspect-video w-full rounded-2xl overflow-hidden bg-black border-[3px] border-black dark:border-gray-100 shadow-[6px_6px_0_0_rgba(0,0,0,1)] dark:shadow-[6px_6px_0_0_rgba(255,255,255,0.2)]">
+        <div data-replay-target="video" class="w-full h-full"></div>
+      </div>
+    <% end %>
+
     <%= render "stream_sessions/timeline", turns: @turns, autoplay: @autoplay_replay %>
   </main>
 </div>

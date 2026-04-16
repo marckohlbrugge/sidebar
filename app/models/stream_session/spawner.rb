@@ -6,6 +6,7 @@ class StreamSession::Spawner
   def spawn!
     return if @session.process_alive?
     @session.resolve_video_id!
+    @session.detect_kind!
     log_file = Rails.root.join("log/ingest_#{@session.id}.log")
     pid = Process.spawn(
       { "RAILS_ENV" => Rails.env },

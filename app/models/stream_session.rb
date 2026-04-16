@@ -47,4 +47,8 @@ class StreamSession < ApplicationRecord
     resolved = YtDlp.video_id(youtube_url)
     update!(video_id: resolved) if resolved
   end
+
+  def detect_kind!
+    update!(live: YtDlp.live?(youtube_url))
+  end
 end

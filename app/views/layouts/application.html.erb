@@ -25,6 +25,10 @@
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <script>
+      window.onYouTubeIframeAPIReady = () => window.dispatchEvent(new Event("youtube:ready"))
+    </script>
+    <script src="https://www.youtube.com/iframe_api" async></script>
   </head>
 
   <body class="bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100">

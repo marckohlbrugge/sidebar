@@ -12,6 +12,6 @@ class Turn < ApplicationRecord
   after_create_commit -> { AnalyzeTurnJob.perform_later(self) }
 
   def replay_offset_ms
-    ((finalized_at - stream_session.replay_origin) * 1000).to_i
+    audio_start_ms || ((finalized_at - stream_session.replay_origin) * 1000).to_i
   end
 end
