@@ -12,6 +12,8 @@ class StreamSession::Ingest
 
   def run
     @session.update!(status: "running", started_at: Time.current)
+    @session.resolve_video_id!
+    @session.detect_kind!
     stream_url = resolve_stream_url
     abort_session!("could not resolve stream url") unless stream_url
 

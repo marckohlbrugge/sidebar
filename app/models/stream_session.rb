@@ -22,6 +22,13 @@ class StreamSession < ApplicationRecord
     @replay_origin ||= turns.minimum(:finalized_at)
   end
 
+  def show_video?
+    # Pre-recorded videos replay in sync with the transcript; live
+    # streams replay with a mismatched current-broadcast feed, so we
+    # only embed them while actively ingesting.
+    video_id.present? && (!live? || running?)
+  end
+
   def timeline_turns
     turns.ordered.includes(:gate_decision, :comments)
   end

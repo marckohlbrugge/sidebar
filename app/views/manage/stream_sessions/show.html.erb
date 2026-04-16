@@ -36,8 +36,10 @@
       <div class="p-8 rounded-2xl border-[3px] border-dashed border-gray-300 dark:border-gray-700 text-center text-gray-500 dark:text-gray-400 font-medium">
         <% if @session.process_alive? %>
           Transcribing… turns will appear as they arrive.
+        <% elsif @session.pid.present? %>
+          Ingest exited without producing turns. Check <code class="text-xs"><%= @session.log_path %></code> for details.
         <% else %>
-          No transcript yet. Start the session to begin ingesting.
+          Ingest never started. Try creating the session again.
         <% end %>
       </div>
     <% end %>
