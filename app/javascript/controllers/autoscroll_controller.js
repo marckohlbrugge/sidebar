@@ -11,21 +11,19 @@ export default class extends Controller {
   static targets = ["latest"]
 
   #wasNearBottom = true
+  #tailScheduled = false
 
   connect() {
     this.#scrollToBottom(false)
-    this.#boundBefore = this.#rememberPosition.bind(this)
-    this.#boundAfter = this.#respond.bind(this)
-    this.#boundScroll = this.#onScroll.bind(this)
-    document.addEventListener("turbo:before-stream-render", this.#boundBefore)
-    document.addEventListener("turbo:after-stream-render", this.#boundAfter)
-    window.addEventListener("scroll", this.#boundScroll, { passive: true })
+    document.addEventListener("turbo:before-stream-render", this.#rememberPosition)
+    document.addEventListener("turbo:after-stream-render", this.#respond)
+    window.addEventListener("scroll", this.#onScroll, { passive: true })
   }
 
   disconnect() {
-    document.removeEventListener("turbo:before-stream-render", this.#boundBefore)
-    document.removeEventListener("turbo:after-stream-render", this.#boundAfter)
-    window.removeEventListener("scroll", this.#boundScroll)
+    document.removeEventListener("turbo:before-stream-render", this.#rememberPosition)
+    document.removeEventListener("turbo:after-stream-render", this.#respond)
+    window.removeEventListener("scroll", this.#onScroll)
   }
 
   jumpToLatest() {
@@ -33,11 +31,11 @@ export default class extends Controller {
     this.#hideBadge()
   }
 
-  #rememberPosition() {
+  #rememberPosition = () => {
     this.#wasNearBottom = this.#isNearBottom()
   }
 
-  #respond() {
+  #respond = () => {
     if (this.#wasNearBottom) {
       this.#tail()
     } else {
@@ -45,17 +43,17 @@ export default class extends Controller {
     }
   }
 
-  #tail() {
-    if (this.tailScheduled) return
-    this.tailScheduled = true
-    setTimeout(() => {
-      this.#scrollToBottom(true)
-      this.tailScheduled = false
-    }, 120)
+  #onScroll = () => {
+    if (this.#isNearBottom()) this.#hideBadge()
   }
 
-  #onScroll() {
-    if (this.#isNearBottom()) this.#hideBadge()
+  #tail() {
+    if (this.#tailScheduled) return
+    this.#tailScheduled = true
+    setTimeout(() => {
+      this.#scrollToBottom(true)
+      this.#tailScheduled = false
+    }, 120)
   }
 
   #isNearBottom() {

@@ -1,11 +1,12 @@
 class Manage::StreamSessionsController < ApplicationController
+  before_action :set_session, only: %i[show stop toggle_demo]
+
   def index
     @sessions = StreamSession.order(created_at: :desc)
   end
 
   def show
-    @session = StreamSession.find(params[:id])
-    @turns = @session.turns.ordered.includes(:gate_decision, :comments)
+    @turns = @session.timeline_turns
     @events = @session.transcript_events.ordered.last(20)
   end
 
@@ -14,20 +15,28 @@ class Manage::StreamSessionsController < ApplicationController
   end
 
   def create
-    @session = StreamSession.create!(youtube_url: params[:stream_session][:youtube_url])
+    @session = StreamSession.create!(session_params)
     @session.spawn_ingest!
     redirect_to [ :manage, @session ]
   end
 
   def stop
-    session = StreamSession.find(params[:id])
-    session.stop_ingest!
-    redirect_to [ :manage, session ]
+    @session.stop_ingest!
+    redirect_to [ :manage, @session ]
   end
 
   def toggle_demo
-    session = StreamSession.find(params[:id])
-    session.update!(demo: !session.demo?)
-    redirect_to [ :manage, session ]
+    @session.toggle!(:demo)
+    redirect_to [ :manage, @session ]
+  end
+
+  private
+
+  def set_session
+    @session = StreamSession.find(params[:id])
+  end
+
+  def session_params
+    params.expect(stream_session: [ :youtube_url ])
   end
 end

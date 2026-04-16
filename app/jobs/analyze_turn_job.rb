@@ -6,7 +6,7 @@ class AnalyzeTurnJob < ApplicationJob
 
   def perform(turn)
     session = turn.stream_session
-    return if session.kill_switched?
+    return if StreamSession.kill_switched? || session.killed?
     return if session.llm_call_count >= LLM_CALL_CAP
 
     decision = Turn::Gatekeeper.new(turn).run!

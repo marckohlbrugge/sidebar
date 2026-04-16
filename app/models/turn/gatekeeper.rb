@@ -49,25 +49,23 @@ class Turn::Gatekeeper
 
   def user_message
     previous = @turn.stream_session.turns
-      .where("id < ?", @turn.id)
-      .order(id: :desc)
-      .limit(CONTEXT_TURNS)
-      .includes(:comments)
-      .to_a
-      .reverse
-
-    lines = previous.map do |t|
-      comment = t.comments.last
-      speaker = comment ? "#{comment.persona&.display_name || comment.personality}: #{comment.body}" : nil
-      [ "- #{t.text}", speaker && "  ↳ #{speaker}" ].compact
-    end.flatten
+      .where(id: ...@turn.id)
+      .order(:id)
+      .last(CONTEXT_TURNS)
+      .map { |t| "- #{t.text}#{persona_suffix(t)}" }
 
     <<~MSG
       Recent turns (oldest to newest) — each "↳" line is what a persona already said:
-      #{lines.join("\n").presence || "(none)"}
+      #{previous.presence&.join("\n") || "(none)"}
 
       Current turn to cast:
       #{@turn.text}
     MSG
+  end
+
+  def persona_suffix(turn)
+    comment = turn.comments.last
+    return unless comment
+    "\n  ↳ #{comment.persona&.display_name || comment.personality}: #{comment.body}"
   end
 end

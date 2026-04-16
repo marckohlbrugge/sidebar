@@ -83,23 +83,13 @@ class StreamSession::Ingest
   end
 
   def handle_message(raw)
-    data = JSON.parse(raw) rescue (return)
+    data = JSON.parse(raw)
     ActiveRecord::Base.connection_pool.with_connection do
-      persist_event(data)
+      TranscriptEvent.from_deepgram(@session, data)
       advance_turn(data)
     end
-  end
-
-  def persist_event(data)
-    alt = data.dig("channel", "alternatives", 0)
-    @session.transcript_events.create!(
-      payload: data,
-      kind: data["type"] || "Results",
-      is_final: !!data["is_final"],
-      speech_final: !!data["speech_final"],
-      transcript: alt&.dig("transcript"),
-      received_at: Time.current
-    )
+  rescue JSON::ParserError
+    nil
   end
 
   MIN_WORDS_PER_TURN = 8

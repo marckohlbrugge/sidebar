@@ -3,10 +3,10 @@ class PersonaReactionJob < ApplicationJob
 
   def perform(turn, persona_key)
     session = turn.stream_session
-    return if session.kill_switched?
+    return if StreamSession.kill_switched? || session.killed?
     return if session.llm_call_count >= AnalyzeTurnJob::LLM_CALL_CAP
 
-    persona = Turn::Persona::Base.find(persona_key)
+    persona = Turn::Persona.find(persona_key)
     return unless persona
 
     persona.new(turn).run!

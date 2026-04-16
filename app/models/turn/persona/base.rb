@@ -4,24 +4,9 @@ class Turn::Persona::Base
   RECENT_COMMENTS = 3
 
   class << self
-    def triggered_by?(action)
-      triggers.include?(action)
-    end
-
-    def all
-      [ Turn::Persona::FactChecker, Turn::Persona::Context, Turn::Persona::Comedy, Turn::Persona::Troll ]
-    end
-
-    def find(key)
-      all.find { |p| p.key == key }
-    end
-
-    # Subclasses override these:
     def key = name.demodulize.underscore
-    def display_name = raise NotImplementedError
-    def emoji = raise NotImplementedError
+    def triggered_by?(action) = triggers.include?(action)
     def color = "gray"
-    def prompt = raise NotImplementedError
     def triggers = %w[COMMENT]
   end
 
@@ -49,19 +34,18 @@ class Turn::Persona::Base
 
   def user_message
     previous_turns = @turn.stream_session.turns
-      .where("id < ?", @turn.id)
-      .order(id: :desc)
-      .limit(self.class::CONTEXT_TURNS)
+      .where(id: ...@turn.id)
+      .order(:id)
+      .last(self.class::CONTEXT_TURNS)
       .pluck(:text)
-      .reverse
 
-    recent_comments = Comment
-      .joins(:turn)
-      .where(turns: { stream_session_id: @turn.stream_session_id })
-      .where(personality: self.class.key)
-      .order(id: :desc)
+    recent_comments = @turn.stream_session.turns
+      .joins(:comments)
+      .where(comments: { personality: self.class.key })
+      .where(id: ...@turn.id)
+      .order("comments.id DESC")
       .limit(self.class::RECENT_COMMENTS)
-      .pluck(:body)
+      .pluck("comments.body")
       .reverse
 
     <<~MSG
