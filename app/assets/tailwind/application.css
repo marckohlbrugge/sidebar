@@ -23,4 +23,12 @@ html {
   .replay-pending > li {
     display: none;
   }
+
+  /* Placeholder hides itself automatically as soon as #timeline has
+     any children. Lets us always render #timeline so live Turbo
+     broadcasts have a target to append to, even before any turns
+     have arrived. */
+  #timeline:has(> li) ~ [data-empty-state] {
+    display: none;
+  }
 }

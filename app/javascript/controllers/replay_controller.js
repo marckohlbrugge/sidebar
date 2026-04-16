@@ -2,20 +2,15 @@ import { Controller } from "@hotwired/stimulus"
 
 // Replay a finished session in the browser.
 //
-// Two modes:
+// Video-driven (when a YouTube player target is present):
+// - Transcript stays hidden until the video starts playing.
+// - Video's currentTime drives reveals; scrubbing updates visibility
+//   on the next poll tick.
 //
-//   Video-driven (when a YouTube player target is present):
-//   - The video's currentTime drives reveal. Items with
-//     data-show-at-ms ≤ currentTime*1000 are visible, others hidden.
-//   - Seek handling comes for free: whatever the user scrubs to,
-//     we recompute visibility on the next poll tick.
+// Timer-driven (no video): walk items on setTimeout.
 //
-//   Timer-driven (no video):
-//   - Walk through items on setTimeout, clamped gaps so dead air
-//     doesn't drag.
-//
-// Turn highlights are reapplied from the comment's
-// data-highlight-classes whenever a comment is visible.
+// Turn highlights are applied from the comment's
+// data-highlight-classes whenever a comment becomes visible.
 
 const MIN_GAP_MS = 300
 const MAX_GAP_MS = 4000
@@ -30,33 +25,32 @@ export default class extends Controller {
 
   connect() {
     this.timeouts = []
-    this.boundYtReady = this.#onYtReady
-    window.addEventListener("youtube:ready", this.boundYtReady)
+    window.addEventListener("youtube:ready", this.#onYtReady)
+
     if (this.hasVideoTarget && this.videoIdValue) {
       this.#initPlayer()
+      // Items stay hidden via the server-rendered `replay-pending`
+      // class until the video actually starts playing.
+    } else if (this.autoplayValue) {
+      this.#beginTimerReveal()
     }
-    if (this.autoplayValue) this.start()
   }
 
   disconnect() {
+    window.removeEventListener("youtube:ready", this.#onYtReady)
+    this.#stopPolling()
     this.#clear()
-    window.removeEventListener("youtube:ready", this.boundYtReady)
-    if (this.pollId) cancelAnimationFrame(this.pollId)
   }
 
+  // REPLAY button: (re)start playback from the beginning.
   start() {
     this.#clear()
-    this.#hideAll()
-    this.#clearAllHighlights()
-    document.getElementById("timeline")?.classList.remove("replay-pending")
-    window.scrollTo({ top: 0, behavior: "smooth" })
-
-    if (this.player && typeof this.player.playVideo === "function") {
+    if (this.player?.playVideo) {
       this.player.seekTo(0, true)
       this.player.playVideo()
-      this.#startPolling()
+      // onStateChange -> PLAYING will drive the rest.
     } else {
-      this.#startTimerReveal()
+      this.#beginTimerReveal()
     }
   }
 
@@ -70,10 +64,8 @@ export default class extends Controller {
   // ───── video-driven reveal ────────────────────────────────
 
   #initPlayer = () => {
-    if (window.YT && window.YT.Player) {
-      this.#createPlayer()
-    }
-    // else wait for youtube:ready event; handler runs #createPlayer.
+    if (window.YT && window.YT.Player) this.#createPlayer()
+    // else wait for youtube:ready event.
   }
 
   #onYtReady = () => {
@@ -88,16 +80,34 @@ export default class extends Controller {
         playsinline: 1,
         rel: 0,
         modestbranding: 1,
-        origin: window.location.origin
+        origin: window.location.origin,
+        autoplay: this.autoplayValue ? 1 : 0,
+        mute: this.autoplayValue ? 1 : 0
       },
       events: {
-        onReady: () => { /* ready, awaiting start */ },
-        onStateChange: (event) => {
-          if (event.data === YT.PlayerState.PLAYING) this.#startPolling()
-          if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) this.#stopPolling()
-        }
+        onReady: () => { /* ready, awaiting play */ },
+        onStateChange: this.#onPlayerStateChange
       }
     })
+  }
+
+  #onPlayerStateChange = (event) => {
+    if (event.data === YT.PlayerState.PLAYING) this.#beginVideoReveal()
+    if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+      this.#stopPolling()
+    }
+  }
+
+  #beginVideoReveal() {
+    if (this.videoRevealActive) {
+      this.#startPolling()
+      return
+    }
+    this.videoRevealActive = true
+    this.#hideAll()
+    this.#clearAllHighlights()
+    document.getElementById("timeline")?.classList.remove("replay-pending")
+    this.#startPolling()
   }
 
   #startPolling() {
@@ -133,7 +143,11 @@ export default class extends Controller {
 
   // ───── timer-driven reveal (no video) ─────────────────────
 
-  #startTimerReveal() {
+  #beginTimerReveal() {
+    this.#hideAll()
+    this.#clearAllHighlights()
+    document.getElementById("timeline")?.classList.remove("replay-pending")
+
     const items = [...this.itemTargets].sort((a, b) =>
       Number(a.dataset.showAtMs) - Number(b.dataset.showAtMs)
     )
