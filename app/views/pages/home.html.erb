@@ -4,7 +4,7 @@
       <%= image_tag "icon.png", class: "size-24 rounded-2xl" %>
       <h1 class="text-6xl font-black tracking-tight">Armchair</h1>
     </div>
-    <p class="text-xl font-medium text-gray-700 dark:text-gray-300 max-w-2xl leading-snug">
+    <p class="text-xl font-medium text-gray-700 dark:text-gray-300 max-w-2xl leading-snug text-balance">
       A real-time AI sidebar for live podcasts. Four armchair critics watch the conversation and chime in — a stern producer, an encyclopedic context guy, a comedy writer, and a cynical troll.
     </p>
     <div class="flex items-center gap-3 pt-2">
@@ -15,15 +15,22 @@
   <% if @demos.any? %>
     <section class="space-y-4">
       <h2 class="text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">Examples</h2>
-      <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <ul class="grid grid-cols-1 md:grid-cols-2 gap-5">
         <% @demos.each do |session| %>
           <li>
-            <%= link_to stream_session_path(session, replay: 1), class: "block p-5 rounded-2xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.15)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" do %>
-              <div class="flex items-start gap-3">
-                <div class="size-12 shrink-0 rounded-xl bg-purple-400 text-black flex items-center justify-center font-black text-lg border-2 border-black dark:border-gray-100">▶</div>
-                <div class="min-w-0">
-                  <div class="font-black text-base truncate"><%= session.youtube_url %></div>
-                  <div class="text-[10px] font-mono text-gray-500 dark:text-gray-400 uppercase mt-1"><%= session.turns.count %> turns</div>
+            <%= link_to stream_session_path(session, replay: 1), class: "block rounded-2xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.15)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition overflow-hidden" do %>
+              <% if session.video_id.present? %>
+                <div class="aspect-video bg-black relative">
+                  <%= image_tag "https://i.ytimg.com/vi/#{session.video_id}/hqdefault.jpg", class: "w-full h-full object-cover", loading: "lazy", alt: "" %>
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="size-14 rounded-full bg-purple-400 text-black flex items-center justify-center font-black text-lg border-[3px] border-black shadow-[3px_3px_0_0_rgba(0,0,0,1)]">▶</div>
+                  </div>
+                </div>
+              <% end %>
+              <div class="p-4">
+                <div class="font-black text-sm truncate"><%= session.youtube_url.sub(%r{^https?://(www\.)?}, "") %></div>
+                <div class="text-[10px] font-mono text-gray-500 dark:text-gray-400 uppercase mt-1">
+                  <%= session.turns.count %> turns · <%= session.live? ? "live" : "recorded" %>
                 </div>
               </div>
             <% end %>

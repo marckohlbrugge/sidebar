@@ -83,7 +83,13 @@ export default class extends Controller {
   #createPlayer = () => {
     this.player = new YT.Player(this.videoTarget, {
       videoId: this.videoIdValue,
-      playerVars: { playsinline: 1, rel: 0, modestbranding: 1 },
+      host: "https://www.youtube-nocookie.com",
+      playerVars: {
+        playsinline: 1,
+        rel: 0,
+        modestbranding: 1,
+        origin: window.location.origin
+      },
       events: {
         onReady: () => { /* ready, awaiting start */ },
         onStateChange: (event) => {
