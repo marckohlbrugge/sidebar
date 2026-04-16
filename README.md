@@ -45,11 +45,22 @@ bin/dev
 
 Alternatively, self-hosters can set `DEEPGRAM_API_KEY` and `ANTHROPIC_API_KEY` as environment variables instead of using Rails credentials.
 
-Visit `http://localhost:3000`, create a session with a YouTube live URL (or any recorded video), click **Start**, and watch the personas chime in.
+Visit `http://localhost:3000`, head to `/manage/sessions/new`, paste a YouTube URL (live or recorded), and watch the personas chime in.
 
-## Status
+## Deploying
 
-This is an early prototype — works locally, but not yet polished for production deployment. If there's interest I'll add a proper Docker / Kamal setup and flesh out these docs with troubleshooting, tuning notes, and deployment options. Open an issue if you want to self-host and I'll prioritize it.
+The included `Dockerfile` bundles `yt-dlp` and `ffmpeg`, so Kamal deploys work out of the box. Set production credentials before deploying:
+
+```yaml
+# config/credentials/production.yml.enc
+deepgram_api_key: ...
+anthropic_api_key: ...
+manage:
+  username: admin
+  password: <strong password>
+```
+
+`manage:` credentials gate the `/manage/*` routes behind HTTP basic auth in production. The public home page and session replay URLs stay open.
 
 ## How it works
 
