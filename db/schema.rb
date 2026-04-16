@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_16_213450) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_16_214923) do
   create_table "comments", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -30,6 +30,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_213450) do
     t.integer "turn_id", null: false
     t.datetime "updated_at", null: false
     t.index ["turn_id"], name: "index_gate_decisions_on_turn_id", unique: true
+  end
+
+  create_table "invites", force: :cascade do |t|
+    t.string "code", null: false
+    t.datetime "created_at", null: false
+    t.string "label"
+    t.integer "max_llm_calls_per_session", default: 20, null: false
+    t.integer "max_sessions", default: 5, null: false
+    t.integer "max_turns_per_session", default: 50, null: false
+    t.datetime "revoked_at"
+    t.integer "sessions_used", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_invites_on_code", unique: true
   end
 
   create_table "solid_cable_messages", force: :cascade do |t|
@@ -165,6 +178,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_213450) do
 
   create_table "stream_sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.integer "invite_id"
     t.boolean "live", default: true, null: false
     t.integer "llm_call_count", default: 0, null: false
     t.string "log_path"
@@ -177,6 +191,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_213450) do
     t.datetime "updated_at", null: false
     t.string "video_id"
     t.string "youtube_url"
+    t.index ["invite_id"], name: "index_stream_sessions_on_invite_id"
     t.index ["token"], name: "index_stream_sessions_on_token", unique: true
   end
 
@@ -216,6 +231,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_213450) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "stream_sessions", "invites"
   add_foreign_key "transcript_events", "stream_sessions"
   add_foreign_key "turns", "stream_sessions"
 end

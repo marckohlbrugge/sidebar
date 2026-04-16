@@ -8,6 +8,11 @@ class StreamSession::TurnBuilder
     @started_at = nil
     @audio_start_ms = nil
     @audio_end_ms = nil
+    @limit_reached = false
+  end
+
+  def limit_reached?
+    @limit_reached
   end
 
   def handle(raw)
@@ -61,5 +66,6 @@ class StreamSession::TurnBuilder
     @started_at = nil
     @audio_start_ms = nil
     @audio_end_ms = nil
+    @limit_reached = @session.turn_cap_reached?
   end
 end

@@ -1,0 +1,11 @@
+<div class="max-w-xl mx-auto px-6 py-6 space-y-6">
+  <%= render "shared/brand" %>
+  <div>
+    <%= link_to "← back", manage_invite_path(@invite), class: "text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" %>
+    <h1 class="text-4xl font-black tracking-tight mt-1">Edit Invite</h1>
+  </div>
+
+  <%= render "form", invite: @invite, url: manage_invite_path(@invite), submit_label: "SAVE" %>
+
+  <%= button_to "DELETE INVITE", manage_invite_path(@invite), method: :delete, data: { turbo_confirm: "Delete this invite? Associated sessions will be kept but detached." }, class: "px-5 py-2.5 rounded-xl bg-red-500 text-white font-black text-sm border-[3px] border-black dark:border-gray-100 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
+</div>

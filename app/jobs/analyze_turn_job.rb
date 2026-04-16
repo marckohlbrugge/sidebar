@@ -7,7 +7,8 @@ class AnalyzeTurnJob < ApplicationJob
   def perform(turn)
     session = turn.stream_session
     return if StreamSession.kill_switched? || session.killed?
-    return if session.llm_call_count >= LLM_CALL_CAP
+    return if session.llm_call_count >= session.llm_call_cap
+    return if session.turn_cap_reached?
 
     decision = Turn::Gatekeeper.new(turn).run!
     persona = decision.persona

@@ -1,0 +1,29 @@
+<%= form_with model: invite, url: url, class: "space-y-4" do |f| %>
+  <% if invite.errors.any? %>
+    <div class="p-3 rounded-xl border-[3px] border-red-500 bg-red-50 dark:bg-red-950 text-red-800 dark:text-red-200 text-sm">
+      <%= invite.errors.full_messages.to_sentence %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :label, class: "block text-xs font-black uppercase tracking-wider mb-1" %>
+    <%= f.text_field :label, placeholder: "x-group-drop-2026-04-16", class: "w-full px-4 py-3 rounded-xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900 font-medium text-base shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.15)] focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-none transition" %>
+  </div>
+
+  <div class="grid grid-cols-3 gap-3">
+    <div>
+      <%= f.label :max_sessions, "Sessions", class: "block text-xs font-black uppercase tracking-wider mb-1" %>
+      <%= f.number_field :max_sessions, min: 1, class: "w-full px-3 py-2 rounded-xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900 font-medium text-base shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.15)] focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-none transition" %>
+    </div>
+    <div>
+      <%= f.label :max_turns_per_session, "Turns / session", class: "block text-xs font-black uppercase tracking-wider mb-1" %>
+      <%= f.number_field :max_turns_per_session, min: 1, class: "w-full px-3 py-2 rounded-xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900 font-medium text-base shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.15)] focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-none transition" %>
+    </div>
+    <div>
+      <%= f.label :max_llm_calls_per_session, "LLM calls / session", class: "block text-xs font-black uppercase tracking-wider mb-1" %>
+      <%= f.number_field :max_llm_calls_per_session, min: 1, class: "w-full px-3 py-2 rounded-xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900 font-medium text-base shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.15)] focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-none transition" %>
+    </div>
+  </div>
+
+  <%= f.submit submit_label, class: "px-5 py-2.5 rounded-xl bg-green-400 text-black font-black text-sm border-[3px] border-black dark:border-gray-100 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition cursor-pointer" %>
+<% end %>

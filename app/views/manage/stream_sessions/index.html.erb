@@ -3,6 +3,7 @@
   <header class="flex items-center justify-between">
     <h1 class="text-4xl font-black tracking-tight">Manage</h1>
     <div class="flex items-center gap-2">
+      <%= link_to "INVITES", manage_invites_path, class: "px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-black dark:text-white font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
       <%= link_to "JOBS", manage_jobs_path, class: "px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-black dark:text-white font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
       <%= link_to "+ NEW SESSION", new_manage_stream_session_path, class: "px-5 py-2.5 rounded-xl bg-green-400 text-black font-black text-sm border-[3px] border-black dark:border-gray-100 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
     </div>

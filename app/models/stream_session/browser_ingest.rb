@@ -16,7 +16,10 @@ class StreamSession::BrowserIngest
     @deepgram = StreamSession::Deepgram.open_client
 
     @deepgram.on(:open) { mark_running }
-    @deepgram.on(:message) { |event| @turns.handle(event.data) }
+    @deepgram.on(:message) do |event|
+      @turns.handle(event.data)
+      close_for_invite_limit! if @turns.limit_reached?
+    end
     @deepgram.on(:close) { cleanup }
 
     @browser.on(:message) do |event|
@@ -45,5 +48,11 @@ class StreamSession::BrowserIngest
     end
     @browser.close rescue nil
     @deepgram = nil
+  end
+
+  def close_for_invite_limit!
+    return if @closing_for_limit
+    @closing_for_limit = true
+    EM.schedule { @deepgram&.send({ type: "CloseStream" }.to_json) rescue nil }
   end
 end

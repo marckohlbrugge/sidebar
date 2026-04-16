@@ -1,0 +1,59 @@
+<div class="max-w-2xl mx-auto px-6 py-6 space-y-6">
+  <%= render "shared/brand" %>
+  <div class="flex items-center justify-between">
+    <div>
+      <%= link_to "← invites", manage_invites_path, class: "text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" %>
+      <h1 class="text-4xl font-black tracking-tight mt-1"><%= @invite.label.presence || "(no label)" %></h1>
+    </div>
+    <%= link_to "EDIT", edit_manage_invite_path(@invite), class: "px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-black dark:text-white font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
+  </div>
+
+  <div class="p-4 rounded-2xl border-[3px] border-black dark:border-gray-100 bg-yellow-200 dark:bg-yellow-300 text-black space-y-2">
+    <div class="text-xs font-black uppercase tracking-wider">Invite link</div>
+    <div class="font-mono text-sm break-all select-all"><%= invite_url(@invite.code) %></div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-3 text-sm">
+    <div class="p-4 rounded-xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900">
+      <div class="text-[10px] font-mono uppercase text-gray-500">Sessions</div>
+      <div class="font-black text-lg"><%= @invite.sessions_used %> / <%= @invite.max_sessions %></div>
+    </div>
+    <div class="p-4 rounded-xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900">
+      <div class="text-[10px] font-mono uppercase text-gray-500">Turns / session</div>
+      <div class="font-black text-lg"><%= @invite.max_turns_per_session %></div>
+    </div>
+    <div class="p-4 rounded-xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900">
+      <div class="text-[10px] font-mono uppercase text-gray-500">LLM calls / session</div>
+      <div class="font-black text-lg"><%= @invite.max_llm_calls_per_session %></div>
+    </div>
+  </div>
+
+  <div>
+    <% if @invite.revoked? %>
+      <div class="p-3 rounded-xl border-[3px] border-red-500 bg-red-50 dark:bg-red-950 text-red-800 dark:text-red-200 text-sm font-bold mb-2">
+        Revoked <%= time_ago_in_words(@invite.revoked_at) %> ago — no new sessions allowed.
+      </div>
+      <%= button_to "RESTORE INVITE", manage_invite_revocation_path(@invite), method: :delete, class: "px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-black dark:text-white font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
+    <% else %>
+      <%= button_to "REVOKE INVITE", manage_invite_revocation_path(@invite), method: :post, data: { turbo_confirm: "Revoke this invite? New sessions will be refused." }, class: "px-4 py-2 rounded-xl bg-red-500 text-white font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
+    <% end %>
+  </div>
+
+  <% if @invite.stream_sessions.any? %>
+    <div class="space-y-2">
+      <h2 class="text-xs font-black uppercase tracking-wider text-gray-500">Sessions from this invite</h2>
+      <ul class="space-y-2">
+        <% @invite.stream_sessions.order(created_at: :desc).each do |s| %>
+          <li>
+            <%= link_to [ :manage, s ], class: "block p-3 rounded-xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.15)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" do %>
+              <div class="flex items-center justify-between text-xs font-bold">
+                <span><%= s.token %></span>
+                <span class="text-gray-500 font-mono uppercase"><%= s.status %> · <%= s.turns.count %> turns · <%= l s.created_at, format: :short %></span>
+              </div>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+</div>

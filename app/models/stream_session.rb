@@ -1,4 +1,5 @@
 class StreamSession < ApplicationRecord
+  belongs_to :invite, optional: true
   has_many :transcript_events, dependent: :destroy
   has_many :turns, dependent: :destroy
 
@@ -15,6 +16,14 @@ class StreamSession < ApplicationRecord
 
   def self.kill_switched?
     ENV["KILL_SWITCH"] == "1"
+  end
+
+  def llm_call_cap
+    invite&.max_llm_calls_per_session || AnalyzeTurnJob::LLM_CALL_CAP
+  end
+
+  def turn_cap_reached?
+    invite && turns.count >= invite.max_turns_per_session
   end
 
   def replay_origin

@@ -1,0 +1,21 @@
+<div class="max-w-xl mx-auto px-6 py-12 space-y-6">
+  <%= render "shared/brand" %>
+  <div>
+    <h1 class="text-4xl font-black tracking-tight mt-1">Start a session</h1>
+    <p class="text-gray-600 dark:text-gray-300 mt-2 font-medium">
+      You've been invited to try Armchair. Click below to start a microphone session — record a conversation, or play a YouTube video / livestream in another tab and let Armchair listen in.
+    </p>
+  </div>
+
+  <div class="p-4 rounded-xl border-[3px] border-black dark:border-gray-100 bg-yellow-200 dark:bg-yellow-300 text-black text-sm font-medium">
+    <%= @invite.max_sessions - @invite.sessions_used %> of <%= @invite.max_sessions %> sessions left on this invite.<br>
+    Each session is capped at <%= @invite.max_turns_per_session %> turns.
+  </div>
+
+  <%= button_to "START SESSION", invited_stream_sessions_path, method: :post,
+        class: "px-6 py-3 rounded-xl bg-green-400 text-black font-black text-sm border-[3px] border-black dark:border-gray-100 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition cursor-pointer" %>
+
+  <div>
+    <%= link_to "← back to home", root_path, class: "text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" %>
+  </div>
+</div>

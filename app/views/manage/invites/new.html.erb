@@ -1,0 +1,10 @@
+<div class="max-w-xl mx-auto px-6 py-6 space-y-6">
+  <%= render "shared/brand" %>
+  <div>
+    <%= link_to "← invites", manage_invites_path, class: "text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" %>
+    <h1 class="text-4xl font-black tracking-tight mt-1">New Invite</h1>
+    <p class="text-gray-600 dark:text-gray-300 mt-2 font-medium">A code + caps. Share the link, they get mic-only sessions up to the caps below.</p>
+  </div>
+
+  <%= render "form", invite: @invite, url: manage_invites_path, submit_label: "CREATE" %>
+</div>

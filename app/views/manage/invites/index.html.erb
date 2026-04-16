@@ -1,0 +1,42 @@
+<div class="max-w-4xl mx-auto px-6 py-6 space-y-6">
+  <%= render "shared/brand" %>
+  <header class="flex items-center justify-between">
+    <div>
+      <%= link_to "← manage", manage_stream_sessions_path, class: "text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" %>
+      <h1 class="text-4xl font-black tracking-tight mt-1">Invites</h1>
+    </div>
+    <%= link_to "+ NEW INVITE", new_manage_invite_path, class: "px-5 py-2.5 rounded-xl bg-green-400 text-black font-black text-sm border-[3px] border-black dark:border-gray-100 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
+  </header>
+
+  <% if @invites.empty? %>
+    <div class="p-8 rounded-2xl border-[3px] border-dashed border-gray-300 dark:border-gray-700 text-center text-gray-500 dark:text-gray-400 font-medium">
+      No invites yet. Create one to share Armchair with friends.
+    </div>
+  <% else %>
+    <ul class="space-y-4">
+      <% @invites.each do |invite| %>
+        <li>
+          <%= link_to manage_invite_path(invite), class: "block p-4 rounded-2xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.15)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" do %>
+            <div class="flex items-center justify-between gap-4">
+              <div class="min-w-0">
+                <div class="font-black text-base truncate">
+                  <%= invite.label.presence || "(no label)" %>
+                  <% if invite.revoked? %>
+                    <span class="ml-2 px-2 py-0.5 rounded-md bg-red-500 text-white text-[10px] font-mono uppercase">revoked</span>
+                  <% elsif invite.spent? %>
+                    <span class="ml-2 px-2 py-0.5 rounded-md bg-gray-400 text-white text-[10px] font-mono uppercase">spent</span>
+                  <% end %>
+                </div>
+                <div class="text-[10px] font-mono text-gray-500 dark:text-gray-400 uppercase mt-1"><%= invite.code %></div>
+              </div>
+              <div class="flex items-center gap-3 text-xs font-bold text-gray-600 dark:text-gray-300 shrink-0">
+                <span class="px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-800"><%= invite.sessions_used %> / <%= invite.max_sessions %> used</span>
+                <span class="px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-800"><%= invite.max_turns_per_session %> turns/session</span>
+              </div>
+            </div>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</div>
