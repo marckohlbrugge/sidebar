@@ -1,10 +1,10 @@
-# Sidebar
+# Armchair
 
 A real-time AI sidebar for live podcasts by [Marc Köhlbrugge](https://x.com/marckohlbrugge).
 
-## What is Sidebar?
+## What is Armchair?
 
-Sidebar listens to a live YouTube stream, transcribes it in real time, and cuts in with commentary from a panel of four AI personas — inspired by the staff of *The Howard Stern Show*:
+Armchair listens to a live YouTube stream, transcribes it in real time, and cuts in with commentary from a panel of four AI armchair critics — inspired by the staff of *The Howard Stern Show*:
 
 - 📋 **Gary** — the stern producer who keeps facts straight
 - 🎛️ **Fred** — the encyclopedic context guy with the lateral connection

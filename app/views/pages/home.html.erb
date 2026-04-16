@@ -1,8 +1,11 @@
 <div class="max-w-4xl mx-auto px-6 py-12 space-y-12">
   <section class="space-y-4">
-    <h1 class="text-6xl font-black tracking-tight">Sidebar</h1>
+    <div class="flex items-center gap-5">
+      <%= image_tag "icon.png", class: "size-24 rounded-2xl" %>
+      <h1 class="text-6xl font-black tracking-tight">Armchair</h1>
+    </div>
     <p class="text-xl font-medium text-gray-700 dark:text-gray-300 max-w-2xl leading-snug">
-      A real-time AI co-host for live podcasts. Four personas watch the conversation and chime in — a stern producer, an encyclopedic context guy, a comedy writer, and a cynical troll.
+      A real-time AI sidebar for live podcasts. Four armchair critics watch the conversation and chime in — a stern producer, an encyclopedic context guy, a comedy writer, and a cynical troll.
     </p>
     <div class="flex items-center gap-3 pt-2">
       <%= link_to "manage", manage_stream_sessions_path, class: "text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" %>
