@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
 @layer utilities {
   /* Only the last comment-row in the timeline stays sticky.
      Works even with turn-rows interleaved because we only look at

@@ -13,6 +13,10 @@ class StreamSession < ApplicationRecord
     ENV["KILL_SWITCH"] == "1" || status == "killed"
   end
 
+  def replay_origin
+    @replay_origin ||= turns.minimum(:finalized_at)
+  end
+
   def spawn_ingest!
     return if process_alive?
     resolve_video_id!

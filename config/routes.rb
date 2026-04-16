@@ -15,5 +15,6 @@ Rails.application.routes.draw do
       post :stop
     end
   end
+
   root "stream_sessions#index"
 end

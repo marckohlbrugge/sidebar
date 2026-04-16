@@ -39,10 +39,19 @@ export default class extends Controller {
 
   #respond() {
     if (this.#wasNearBottom) {
-      this.#scrollToBottom(true)
+      this.#tail()
     } else {
       this.#showBadge()
     }
+  }
+
+  #tail() {
+    if (this.tailScheduled) return
+    this.tailScheduled = true
+    setTimeout(() => {
+      this.#scrollToBottom(true)
+      this.tailScheduled = false
+    }, 120)
   }
 
   #onScroll() {

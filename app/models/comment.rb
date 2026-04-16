@@ -1,5 +1,12 @@
 class Comment < ApplicationRecord
   belongs_to :turn
+  delegate :stream_session, to: :turn
+
+  def replay_offset_ms
+    origin = stream_session.replay_origin
+    return 0 unless origin
+    ((created_at - origin) * 1000).to_i
+  end
 
   after_create_commit -> {
     session = turn.stream_session

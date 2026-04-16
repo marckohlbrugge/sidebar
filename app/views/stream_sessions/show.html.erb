@@ -1,7 +1,7 @@
 <%= turbo_stream_from @session, :events %>
 <%= turbo_stream_from @session, :timeline %>
 
-<div data-controller="debug-toggle">
+<div data-controller="debug-toggle replay">
   <header class="sticky top-0 z-20 bg-white dark:bg-gray-950 border-b-[3px] border-black dark:border-gray-100">
     <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
       <div class="min-w-0">
@@ -14,6 +14,9 @@
           <%= button_to "STOP", stop_stream_session_path(@session), class: "px-4 py-2 rounded-xl bg-red-500 text-white font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
         <% else %>
           <%= button_to "START", start_stream_session_path(@session), class: "px-4 py-2 rounded-xl bg-green-400 text-black font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
+        <% end %>
+        <% if @turns.any? && !@session.process_alive? %>
+          <button type="button" data-action="replay#start" class="px-4 py-2 rounded-xl bg-purple-400 text-black font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition">REPLAY</button>
         <% end %>
         <button type="button" data-action="debug-toggle#toggle" class="px-3 py-1.5 rounded-lg border-2 border-gray-300 dark:border-gray-600 text-[10px] font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800">DEBUG</button>
       </div>

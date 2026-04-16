@@ -1,6 +1,8 @@
 <% highlight = turn.comments.last&.persona %>
 <li id="<%= dom_id turn %>"
-    class="turn-row text-2xl font-medium leading-snug text-gray-900 dark:text-gray-100 col-start-1 py-3 px-4 rounded-xl -mx-4 <%= persona_classes(highlight, :bg) if highlight %>"
+    class="turn-row text-2xl font-medium leading-snug text-gray-900 dark:text-gray-100 col-start-1 py-3 px-4 rounded-xl -mx-4 transition duration-[400ms] ease-out starting:opacity-0 <%= persona_classes(highlight, :bg) if highlight %>"
+    data-replay-target="item"
+    data-show-at-ms="<%= turn.replay_offset_ms %>"
     style="grid-row: <%= turn.id %>">
   <%= turn.text %>
 </li>
