@@ -44,7 +44,7 @@
       <div>
         <h2 class="font-black mb-2 text-xs uppercase tracking-wider text-gray-500">Raw events</h2>
         <ul id="events" class="space-y-0.5 text-[11px] font-mono text-gray-500 max-h-64 overflow-auto border-2 border-gray-200 rounded-lg p-2">
-          <%= render @events %>
+          <%= render partial: "transcript_events/transcript_event", collection: @events, as: :transcript_event %>
         </ul>
       </div>
     </section>

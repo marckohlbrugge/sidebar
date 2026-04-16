@@ -1,7 +1,7 @@
 <ul id="timeline" class="grid grid-cols-[minmax(0,1fr)_24rem] gap-x-10 items-start">
   <% turns.each do |turn| %>
-    <%= render turn %>
-    <%= render turn.comments %>
+    <%= render partial: "turns/turn", locals: { turn: turn } %>
+    <%= render partial: "comments/comment", collection: turn.comments, as: :comment %>
   <% end %>
 </ul>
 

@@ -1,12 +1,12 @@
 <% persona = comment.persona %>
 <li id="<%= dom_id comment %>"
-    class="comment-row col-start-2 mb-6 transition-opacity duration-[400ms] ease-out starting:opacity-0"
+    class="comment-row col-start-2 relative transition-opacity duration-[400ms] ease-out starting:opacity-0"
     data-replay-target="item"
     data-show-at-ms="<%= comment.replay_offset_ms %>"
     data-turn-dom-id="<%= dom_id comment.turn %>"
     data-highlight-classes="<%= persona_classes(persona, :bg) %>"
     style="grid-row: <%= comment.turn_id %>">
-  <div class="p-4 rounded-2xl border-[3px] <%= persona_classes(persona, :border) %> <%= persona_classes(persona, :bg) %> shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.15)] transform-gpu backface-hidden">
+  <div class="absolute top-0 left-0 w-full p-4 rounded-2xl border-[3px] <%= persona_classes(persona, :border) %> <%= persona_classes(persona, :bg) %> shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.15)] transform-gpu backface-hidden">
     <div class="flex items-start gap-3">
       <%= image_tag "avatars/#{persona&.key}.png", class: "size-12 rounded-xl shrink-0 border-2 border-black dark:border-gray-100" if persona %>
       <div class="text-base leading-snug">
