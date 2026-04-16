@@ -21,23 +21,11 @@ class StreamSession < ApplicationRecord
   end
 
   def spawn_ingest!
-    return if process_alive?
-    resolve_video_id!
-    log_file = Rails.root.join("log/ingest_#{id}.log")
-    spawned = Process.spawn(
-      { "RAILS_ENV" => Rails.env },
-      Rails.root.join("bin/rails").to_s, "runner", "script/ingest.rb", id.to_s,
-      in: "/dev/null", out: log_file.to_s, err: log_file.to_s, pgroup: true, chdir: Rails.root.to_s
-    )
-    Process.detach(spawned)
-    update!(pid: spawned, log_path: log_file.to_s)
+    Spawner.new(self).spawn!
   end
 
   def stop_ingest!
-    Process.kill("TERM", -pid) if pid && process_alive?
-    update!(pid: nil)
-  rescue Errno::ESRCH
-    update!(pid: nil)
+    Spawner.new(self).stop!
   end
 
   def process_alive?
@@ -50,7 +38,7 @@ class StreamSession < ApplicationRecord
 
   def resolve_video_id!
     return if video_id.present?
-    resolved = `yt-dlp --get-id #{youtube_url.shellescape} 2>/dev/null`.strip.lines.first&.strip
-    update!(video_id: resolved) if resolved.present?
+    resolved = YtDlp.video_id(youtube_url)
+    update!(video_id: resolved) if resolved
   end
 end

@@ -1,13 +1,15 @@
 class Turn::Persona::Base
-  MODEL = "claude-sonnet-4-5"
   CONTEXT_TURNS = 5
   RECENT_COMMENTS = 3
+
+  class_attribute :display_name, :emoji, :color, :triggers, :prompt, :model
+  self.color = "gray"
+  self.triggers = %w[COMMENT].freeze
+  self.model = "claude-sonnet-4-5"
 
   class << self
     def key = name.demodulize.underscore
     def triggered_by?(action) = triggers.include?(action)
-    def color = "gray"
-    def triggers = %w[COMMENT]
   end
 
   def initialize(turn)
@@ -15,7 +17,7 @@ class Turn::Persona::Base
   end
 
   def run!
-    result = RubyLLM.chat(model: self.class::MODEL)
+    result = RubyLLM.chat(model: self.class.model)
       .with_instructions(self.class.prompt)
       .ask(user_message)
 
@@ -26,7 +28,7 @@ class Turn::Persona::Base
     @turn.comments.create!(
       personality: self.class.key,
       body: body,
-      llm_model: self.class::MODEL
+      llm_model: self.class.model
     )
   end
 
@@ -36,7 +38,7 @@ class Turn::Persona::Base
     previous_turns = @turn.stream_session.turns
       .where(id: ...@turn.id)
       .order(:id)
-      .last(self.class::CONTEXT_TURNS)
+      .last(CONTEXT_TURNS)
       .pluck(:text)
 
     recent_comments = @turn.stream_session.turns
@@ -44,7 +46,7 @@ class Turn::Persona::Base
       .where(comments: { personality: self.class.key })
       .where(id: ...@turn.id)
       .order("comments.id DESC")
-      .limit(self.class::RECENT_COMMENTS)
+      .limit(RECENT_COMMENTS)
       .pluck("comments.body")
       .reverse
 

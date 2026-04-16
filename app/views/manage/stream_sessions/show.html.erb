@@ -1,7 +1,7 @@
 <%= turbo_stream_from @session, :timeline %>
 <%= turbo_stream_from @session, :events %>
 
-<div data-controller="replay autoscroll debug-toggle">
+<div data-controller="replay autoscroll debug-toggle highlighter">
   <header class="sticky top-0 z-20 bg-white dark:bg-gray-950 border-b-[3px] border-black dark:border-gray-100">
     <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
       <div class="min-w-0">

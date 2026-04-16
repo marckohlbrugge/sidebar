@@ -45,7 +45,7 @@ class StreamSession::Ingest
   private
 
   def resolve_stream_url
-    `yt-dlp -f "ba*/b" -g #{@session.youtube_url.shellescape} 2>/dev/null`.strip.lines.first&.strip.presence
+    YtDlp.stream_url(@session.youtube_url)
   end
 
   def open_websocket
