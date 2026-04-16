@@ -1,5 +1,5 @@
 class Manage::StreamSessionsController < ApplicationController
-  before_action :set_session, only: %i[show stop toggle_demo]
+  before_action :set_session, only: :show
 
   def index
     @sessions = StreamSession.order(created_at: :desc)
@@ -17,16 +17,6 @@ class Manage::StreamSessionsController < ApplicationController
   def create
     @session = StreamSession.create!(session_params)
     @session.spawn_ingest!
-    redirect_to [ :manage, @session ]
-  end
-
-  def stop
-    @session.stop_ingest!
-    redirect_to [ :manage, @session ]
-  end
-
-  def toggle_demo
-    @session.toggle!(:demo)
     redirect_to [ :manage, @session ]
   end
 

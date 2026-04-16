@@ -7,10 +7,8 @@ Rails.application.routes.draw do
   namespace :manage do
     root to: "stream_sessions#index"
     resources :stream_sessions, path: "sessions" do
-      member do
-        post :stop
-        post :toggle_demo
-      end
+      resource :ingest, only: :destroy
+      resource :demo, only: [ :create, :destroy ]
     end
   end
 end
