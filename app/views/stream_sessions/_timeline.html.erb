@@ -1,0 +1,14 @@
+<ul id="timeline" class="grid grid-cols-[minmax(0,1fr)_24rem] gap-x-10 items-start">
+  <% turns.each do |turn| %>
+    <%= render turn %>
+    <%= render turn.comments %>
+  <% end %>
+</ul>
+
+<button type="button"
+        hidden
+        data-autoscroll-target="latest"
+        data-action="autoscroll#jumpToLatest"
+        class="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 px-4 py-2 rounded-full bg-black text-white dark:bg-white dark:text-black font-black text-xs border-[3px] border-black dark:border-white shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.25)] hover:translate-x-[calc(-50%+2px)] hover:translate-y-0.5 hover:shadow-none transition">
+  ↓ NEW
+</button>

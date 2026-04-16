@@ -1,7 +1,10 @@
 <div class="max-w-4xl mx-auto px-6 py-8 space-y-6">
   <header class="flex items-center justify-between">
-    <h1 class="text-4xl font-black tracking-tight">Sidebar</h1>
-    <%= link_to "+ NEW SESSION", new_stream_session_path, class: "px-5 py-2.5 rounded-xl bg-green-400 text-black font-black text-sm border-[3px] border-black dark:border-gray-100 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
+    <div>
+      <%= link_to "← home", root_path, class: "text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" %>
+      <h1 class="text-4xl font-black tracking-tight mt-1">Manage</h1>
+    </div>
+    <%= link_to "+ NEW SESSION", new_manage_stream_session_path, class: "px-5 py-2.5 rounded-xl bg-green-400 text-black font-black text-sm border-[3px] border-black dark:border-gray-100 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
   </header>
 
   <% if @sessions.empty? %>
@@ -12,7 +15,7 @@
     <ul class="space-y-4">
       <% @sessions.each do |s| %>
         <li class="block">
-          <%= link_to s, class: "block p-4 rounded-2xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.15)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" do %>
+          <%= link_to [ :manage, s ], class: "block p-4 rounded-2xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.15)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" do %>
             <div class="flex items-center justify-between gap-4">
               <div class="min-w-0">
                 <div class="font-black text-base truncate"><%= s.youtube_url %></div>

@@ -12,9 +12,14 @@ const MAX_GAP_MS = 4000
 
 export default class extends Controller {
   static targets = ["item"]
+  static values = { autoplay: Boolean }
 
   connect() {
     this.timeouts = []
+    if (this.autoplayValue) {
+      // Defer so Turbo stream-from and target registration settle.
+      setTimeout(() => this.start(), 200)
+    }
   }
 
   disconnect() {

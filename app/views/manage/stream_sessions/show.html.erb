@@ -1,0 +1,52 @@
+<%= turbo_stream_from @session, :timeline %>
+<%= turbo_stream_from @session, :events %>
+
+<div data-controller="replay autoscroll debug-toggle">
+  <header class="sticky top-0 z-20 bg-white dark:bg-gray-950 border-b-[3px] border-black dark:border-gray-100">
+    <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
+      <div class="min-w-0">
+        <%= link_to "← manage", manage_stream_sessions_path, class: "text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" %>
+        <h1 class="text-lg font-black truncate" title="<%= @session.youtube_url %>"><%= @session.youtube_url %></h1>
+        <div class="text-[10px] font-mono text-gray-500 dark:text-gray-400 uppercase mt-0.5">
+          <%= @session.status %><%= " · pid #{@session.pid}" if @session.process_alive? %>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <% if @session.process_alive? %>
+          <%= button_to "STOP", stop_manage_stream_session_path(@session), class: "px-4 py-2 rounded-xl bg-red-500 text-white font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
+        <% end %>
+        <% if @turns.any? %>
+          <button type="button" data-action="replay#start" class="px-4 py-2 rounded-xl bg-purple-400 text-black font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition">REPLAY</button>
+        <% end %>
+        <%= button_to @session.demo? ? "★ DEMO" : "MAKE DEMO",
+              toggle_demo_manage_stream_session_path(@session),
+              class: "px-3 py-2 rounded-xl text-[10px] font-black border-2 transition #{@session.demo? ? "bg-yellow-300 dark:bg-yellow-400 text-black border-black" : "border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"}" %>
+        <button type="button" data-action="debug-toggle#toggle" class="px-3 py-1.5 rounded-lg border-2 border-gray-300 dark:border-gray-600 text-[10px] font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800">DEBUG</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 py-6">
+    <%= render "stream_sessions/timeline", turns: @turns %>
+
+    <section data-debug-toggle-target="panel" class="hidden space-y-4 mt-8">
+      <% if @session.video_id.present? %>
+        <div class="aspect-video w-full rounded-2xl overflow-hidden bg-black border-[3px] border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)]">
+          <iframe
+            src="https://www.youtube.com/embed/<%= @session.video_id %>?autoplay=1&mute=1"
+            class="w-full h-full"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+      <% end %>
+
+      <div>
+        <h2 class="font-black mb-2 text-xs uppercase tracking-wider text-gray-500">Raw events</h2>
+        <ul id="events" class="space-y-0.5 text-[11px] font-mono text-gray-500 max-h-64 overflow-auto border-2 border-gray-200 rounded-lg p-2">
+          <%= render @events %>
+        </ul>
+      </div>
+    </section>
+  </main>
+</div>

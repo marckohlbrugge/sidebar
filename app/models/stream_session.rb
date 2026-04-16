@@ -8,6 +8,7 @@ class StreamSession < ApplicationRecord
   validates :status, inclusion: { in: STATUSES }
 
   scope :running, -> { where(status: "running") }
+  scope :demos, -> { where(demo: true).order(created_at: :desc) }
 
   def kill_switched?
     ENV["KILL_SWITCH"] == "1" || status == "killed"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_16_101112) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_16_102251) do
   create_table "comments", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -164,6 +164,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_101112) do
 
   create_table "stream_sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.boolean "demo", default: false, null: false
     t.integer "llm_call_count", default: 0, null: false
     t.string "log_path"
     t.integer "pid"
@@ -173,6 +174,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_101112) do
     t.datetime "updated_at", null: false
     t.string "video_id"
     t.string "youtube_url", null: false
+    t.index ["demo"], name: "index_stream_sessions_on_demo", where: "demo = 1"
   end
 
   create_table "transcript_events", force: :cascade do |t|
