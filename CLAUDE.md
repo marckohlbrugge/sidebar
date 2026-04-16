@@ -15,7 +15,7 @@ bin/rails runner script/ingest.rb <id>  # Runs ingest against a StreamSession id
 
 Credentials live in `config/credentials.yml.enc` (dev and prod). Either edit them with `EDITOR="…" bin/rails credentials:edit` or set `DEEPGRAM_API_KEY` / `ANTHROPIC_API_KEY` environment variables. In production, `manage.username` + `manage.password` gate the `/manage/*` routes via HTTP basic auth — without them set, prod admin refuses everyone.
 
-External binaries required on PATH: `yt-dlp` and `ffmpeg`. The production Dockerfile installs both.
+External binary required on PATH for URL-source mode: `ffmpeg`. The production Dockerfile installs it.
 
 No tests in this repo yet.
 

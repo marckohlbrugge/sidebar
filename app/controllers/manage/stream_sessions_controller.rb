@@ -16,7 +16,7 @@ class Manage::StreamSessionsController < Manage::BaseController
 
   def create
     @session = StreamSession.create!(session_params)
-    @session.spawn_ingest!
+    @session.spawn_ingest! if @session.source_url?
     redirect_to [ :manage, @session ]
   end
 
@@ -41,6 +41,6 @@ class Manage::StreamSessionsController < Manage::BaseController
   end
 
   def session_params
-    params.expect(stream_session: [ :youtube_url ])
+    params.expect(stream_session: [ :source_kind, :youtube_url ])
   end
 end

@@ -5,14 +5,13 @@ class StreamSession < ApplicationRecord
   has_secure_token
 
   enum :status, { idle: "idle", running: "running", stopped: "stopped", killed: "killed" }, default: :idle, validate: true
+  enum :source_kind, { url: "url", microphone: "microphone" }, default: :url, validate: true, prefix: :source
 
-  validates :youtube_url, presence: true
+  validates :youtube_url, presence: true, if: :source_url?
 
   def to_param
     token
   end
-
-  scope :demos, -> { where(demo: true).order(created_at: :desc) }
 
   def self.kill_switched?
     ENV["KILL_SWITCH"] == "1"
@@ -47,15 +46,5 @@ class StreamSession < ApplicationRecord
     true
   rescue Errno::ESRCH
     false
-  end
-
-  def resolve_video_id!
-    return if video_id.present?
-    resolved = YtDlp.video_id(youtube_url)
-    update!(video_id: resolved) if resolved
-  end
-
-  def detect_kind!
-    update!(live: YtDlp.live?(youtube_url))
   end
 end

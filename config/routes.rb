@@ -19,14 +19,15 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   root "pages#home"
-  resources :stream_sessions, only: [ :show ], path: "sessions"
+  resources :stream_sessions, only: [ :show ], path: "sessions" do
+    get :ingest, to: "stream_sessions/ingests#create", on: :member
+  end
   mount manage_jobs_app, at: "manage/jobs", as: :manage_jobs
 
   namespace :manage do
     root to: "stream_sessions#index"
     resources :stream_sessions, path: "sessions" do
       resource :ingest, only: :destroy
-      resource :demo, only: [ :create, :destroy ]
     end
   end
 end

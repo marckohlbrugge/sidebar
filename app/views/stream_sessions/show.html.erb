@@ -1,4 +1,5 @@
-<% content_for :title, "#{@session.youtube_url.sub(%r{^https?://(www\.)?}, "")}" %>
+<% session_label = @session.source_microphone? ? "Microphone session" : @session.youtube_url.to_s.sub(%r{^https?://(www\.)?}, "") %>
+<% content_for :title, session_label %>
 <% content_for :og_image, ("https://i.ytimg.com/vi/#{@session.video_id}/maxresdefault.jpg" if @session.video_id.present?) %>
 <%= turbo_stream_from @session, :timeline %>
 
@@ -11,7 +12,9 @@
         <%= render "shared/brand" %>
         <span class="text-gray-300 dark:text-gray-700">/</span>
         <div class="min-w-0">
-          <h1 class="text-base font-black truncate max-w-sm" title="<%= @session.youtube_url %>"><%= @session.youtube_url.sub(%r{^https?://(www\.)?}, "") %></h1>
+          <h1 class="text-base font-black truncate max-w-sm" title="<%= session_label %>">
+            <% if @session.source_microphone? %>🎤 <%= session_label %><% else %><%= session_label %><% end %>
+          </h1>
           <div class="text-[10px] font-mono text-gray-500 dark:text-gray-400 uppercase">
             <% if @session.running? %>
               live

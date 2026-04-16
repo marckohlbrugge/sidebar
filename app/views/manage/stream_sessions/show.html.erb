@@ -9,7 +9,9 @@
         <span class="text-gray-300 dark:text-gray-700">/</span>
         <%= link_to "manage", manage_stream_sessions_path, class: "text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" %>
         <span class="text-gray-300 dark:text-gray-700">/</span>
-        <h1 class="text-base font-black truncate max-w-sm" title="<%= @session.youtube_url %>"><%= @session.youtube_url.sub(%r{^https?://(www\.)?}, "") %></h1>
+        <h1 class="text-base font-black truncate max-w-sm" title="<%= @session.source_microphone? ? "Microphone" : @session.youtube_url %>">
+          <% if @session.source_microphone? %>🎤 Microphone<% else %><%= @session.youtube_url.sub(%r{^https?://(www\.)?}, "") %><% end %>
+        </h1>
         <div class="text-[10px] font-mono text-gray-500 dark:text-gray-400 uppercase mt-0.5">
           <%= @session.status %><%= " · pid #{@session.pid}" if @session.process_alive? %>
         </div>
@@ -22,21 +24,34 @@
         <% if @turns.any? %>
           <button type="button" data-action="replay#start" class="px-4 py-2 rounded-xl bg-purple-400 text-black font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition">REPLAY</button>
         <% end %>
-        <% if @session.demo? %>
-          <%= button_to "★ DEMO", manage_stream_session_demo_path(@session), method: :delete, class: "px-3 py-2 rounded-xl text-[10px] font-black border-2 transition bg-yellow-300 dark:bg-yellow-400 text-black border-black" %>
-        <% else %>
-          <%= button_to "MAKE DEMO", manage_stream_session_demo_path(@session), class: "px-3 py-2 rounded-xl text-[10px] font-black border-2 transition border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800" %>
-        <% end %>
-        <button type="button" data-action="debug-toggle#toggle" class="px-3 py-1.5 rounded-lg border-2 border-gray-300 dark:border-gray-600 text-[10px] font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800">DEBUG</button>
+<button type="button" data-action="debug-toggle#toggle" class="px-3 py-1.5 rounded-lg border-2 border-gray-300 dark:border-gray-600 text-[10px] font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800">DEBUG</button>
       </div>
     </div>
   </header>
 
   <main class="max-w-6xl mx-auto px-6 py-6 space-y-6">
+    <% if @session.source_microphone? %>
+      <div data-controller="mic-recorder"
+           data-mic-recorder-socket-url-value="<%= "#{request.ssl? ? "wss" : "ws"}://#{request.host_with_port}/sessions/#{@session.token}/ingest" %>"
+           data-mic-recorder-worklet-url-value="/pcm_worklet.js"
+           class="p-6 rounded-2xl border-[3px] border-black dark:border-gray-100 bg-yellow-200 dark:bg-yellow-300 text-black flex items-center justify-between gap-4">
+        <div>
+          <div class="font-black text-lg">🎤 Microphone session</div>
+          <div data-mic-recorder-target="status" class="text-sm font-medium">Click START to begin — this page has to stay open while you record.</div>
+        </div>
+        <button type="button" data-mic-recorder-target="button" data-action="mic-recorder#toggle"
+                class="px-6 py-3 rounded-xl bg-green-400 text-black font-black border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition cursor-pointer">
+          ● START RECORDING
+        </button>
+      </div>
+    <% end %>
+
     <%= render "stream_sessions/timeline", turns: @turns %>
 
     <div data-empty-state class="p-8 rounded-2xl border-[3px] border-dashed border-gray-300 dark:border-gray-700 text-center text-gray-500 dark:text-gray-400 font-medium">
-      <% if @session.process_alive? %>
+      <% if @session.source_microphone? %>
+        No turns yet. Start recording and speak for a few seconds.
+      <% elsif @session.process_alive? %>
         Transcribing… turns will appear as they arrive.
       <% elsif @session.pid.present? %>
         Ingest exited without producing turns. Check <code class="text-xs"><%= @session.log_path %></code> for details.
