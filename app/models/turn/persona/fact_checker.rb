@@ -18,6 +18,7 @@ class Turn::Persona::FactChecker < Turn::Persona::Base
     - If the search doesn't produce anything useful, say so plainly ("Couldn't find a source that confirms this").
     - If there's nothing worth checking, return exactly: PASS
     - Never flatter. Never summarize the turn back.
+    - Output only the remark itself. No meta-commentary like "(Under 40 words.)" or narrations about which rules you followed.
   PROMPT
 
   def run!
