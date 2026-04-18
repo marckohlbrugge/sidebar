@@ -6,7 +6,7 @@
 <div data-controller="replay autoscroll highlighter"
      data-replay-autoplay-value="<%= @autoplay_replay %>"
      data-replay-video-id-value="<%= @session.show_video? ? @session.video_id : "" %>">
-  <header class="sticky top-0 z-20 bg-white dark:bg-gray-950 border-b-[3px] border-black dark:border-gray-100">
+  <header class="sticky top-0 z-20 bg-white/90 dark:bg-gray-950/90 backdrop-blur border-b border-gray-200 dark:border-gray-800">
     <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
       <div class="min-w-0 flex items-center gap-3">
         <%= render "shared/brand" %>
@@ -33,6 +33,10 @@
   </header>
 
   <main class="max-w-6xl mx-auto px-6 py-6 space-y-6">
+    <% if @session.source_microphone? && !@session.stopped? %>
+      <%= render "stream_sessions/mic_recorder", session: @session %>
+    <% end %>
+
     <% if @session.show_video? %>
       <details open
                data-controller="draggable"

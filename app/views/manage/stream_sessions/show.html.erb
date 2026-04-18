@@ -51,20 +51,8 @@
       </div>
     </section>
 
-    <% if @session.source_microphone? %>
-      <div data-controller="mic-recorder"
-           data-mic-recorder-socket-url-value="<%= "#{request.ssl? ? "wss" : "ws"}://#{request.host_with_port}/sessions/#{@session.token}/ingest" %>"
-           data-mic-recorder-worklet-url-value="/pcm_worklet.js"
-           class="p-6 rounded-2xl border-[3px] border-black dark:border-gray-100 bg-yellow-200 dark:bg-yellow-300 text-black flex items-center justify-between gap-4">
-        <div>
-          <div class="font-black text-lg">🎤 Microphone session</div>
-          <div data-mic-recorder-target="status" class="text-sm font-medium">Click START to begin — this page has to stay open while you record.</div>
-        </div>
-        <button type="button" data-mic-recorder-target="button" data-action="mic-recorder#toggle"
-                class="px-6 py-3 rounded-xl bg-green-400 text-black font-black border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition cursor-pointer">
-          ● START RECORDING
-        </button>
-      </div>
+    <% if @session.source_microphone? && !@session.stopped? %>
+      <%= render "stream_sessions/mic_recorder", session: @session %>
     <% end %>
 
     <%= render "stream_sessions/timeline", turns: @turns %>

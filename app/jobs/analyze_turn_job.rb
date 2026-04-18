@@ -10,10 +10,10 @@ class AnalyzeTurnJob < ApplicationJob
     return if session.llm_call_count >= session.llm_call_cap
     return if session.turn_cap_reached?
 
-    decision = Turn::Gatekeeper.new(turn).run!
+    decision, directly_invoked = Turn::Gatekeeper.new(turn).run!
     persona = decision.persona
     return unless persona
-    return if on_cooldown?(turn, persona)
+    return if !directly_invoked && on_cooldown?(turn, persona)
 
     PersonaReactionJob.perform_later(turn, persona.key)
   end
