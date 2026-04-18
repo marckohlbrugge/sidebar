@@ -30,7 +30,7 @@ class Turn::Persona::FactChecker < Turn::Persona::Base
     Rails.logger.info "[persona=#{self.class.key}] turn=#{@turn.id} latency=#{elapsed_ms}ms web_searches=#{searches}"
 
     body = extract_text(response).strip
-    return if body.empty? || body == "PASS"
+    return if pass?(body)
 
     @turn.comments.create!(
       personality: self.class.key,

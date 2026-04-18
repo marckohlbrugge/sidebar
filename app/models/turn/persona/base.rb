@@ -27,7 +27,7 @@ class Turn::Persona::Base
     Rails.logger.info "[persona=#{self.class.key}] turn=#{@turn.id} latency=#{elapsed_ms}ms"
 
     body = result.content.to_s.strip
-    return if body.empty? || body == "PASS"
+    return if pass?(body)
 
     @turn.comments.create!(
       personality: self.class.key,
@@ -37,6 +37,12 @@ class Turn::Persona::Base
   end
 
   protected
+
+  # True for empty bodies or any variation of "PASS" the LLM might emit:
+  # "PASS", "Pass", "**PASS**", "PASS.", " pass! ", etc.
+  def pass?(body)
+    body.blank? || body.gsub(/\W+/, "").casecmp?("pass")
+  end
 
   def user_message
     previous_turns = @turn.stream_session.turns
