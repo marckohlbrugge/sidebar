@@ -53,20 +53,36 @@
     <div class="grid md:grid-cols-2 gap-5">
       <div class="space-y-2">
         <div class="text-3xl">🎤</div>
-        <h3 class="font-black text-xl">Browser mic</h3>
+        <h3 class="font-black text-xl">Your microphone</h3>
         <p class="text-gray-700 dark:text-gray-300 font-medium leading-snug">
-          Record from this laptop. Play a podcast or stream in another tab and let Armchair eavesdrop — or use it in a real-life conversation.
+          Talk into your mic, or let it pick up a real-life conversation. Works in any modern browser.
         </p>
       </div>
 
       <div class="space-y-2">
-        <div class="text-3xl">🔗</div>
-        <h3 class="font-black text-xl">Stream URL</h3>
+        <div class="text-3xl">🔊</div>
+        <h3 class="font-black text-xl">A browser tab</h3>
         <p class="text-gray-700 dark:text-gray-300 font-medium leading-snug">
-          Point it at an HLS <code class="font-mono text-sm">.m3u8</code>, an Icecast station, or any HTTP audio stream. Armchair opens it server-side.
+          Open a YouTube video or podcast in another tab, then let Armchair listen to just that tab. Chrome, Edge, and Brave only.
         </p>
       </div>
     </div>
+
+    <p class="text-sm text-gray-500 dark:text-gray-500 font-medium leading-snug">
+      Audio streams directly to the transcription service. Armchair doesn't record or store raw audio — only the transcript and the panel's comments.
+    </p>
+  </section>
+
+  <section class="space-y-5 p-8 rounded-2xl bg-gray-100 dark:bg-gray-900/60">
+    <div>
+      <h2 class="text-3xl font-black tracking-tight">Want in?</h2>
+      <p class="text-gray-700 dark:text-gray-300 font-medium mt-1 leading-snug">
+        Armchair is invite-only for now. DM me on X and I'll send you a link.
+      </p>
+    </div>
+    <%= link_to "https://x.com/marckohlbrugge", class: "inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-green-400 text-black font-black text-sm border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" do %>
+      DM @marckohlbrugge →
+    <% end %>
   </section>
 
   <footer class="pt-10 flex flex-wrap items-center justify-between gap-3 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-500">

@@ -1,33 +1,45 @@
 <div data-controller="mic-recorder"
      data-mic-recorder-socket-url-value="<%= "#{request.ssl? ? "wss" : "ws"}://#{request.host_with_port}/sessions/#{session.token}/ingest" %>"
      data-mic-recorder-worklet-url-value="/pcm_worklet.js"
-     class="p-6 rounded-2xl bg-yellow-200 dark:bg-yellow-300 text-black flex flex-col sm:flex-row sm:items-center gap-4">
-  <div class="flex-1 min-w-0">
-    <div class="font-black text-lg">🎤 Audio session</div>
-    <div data-mic-recorder-target="status" class="text-sm font-medium">
-      Record from your microphone or share audio from another tab. Keep this page open while recording.
+     class="p-6 rounded-2xl bg-yellow-200 dark:bg-yellow-300 text-black space-y-4">
+  <div class="flex items-start justify-between gap-4">
+    <div class="flex-1 min-w-0">
+      <div class="font-black text-xl">Audio session</div>
+      <p class="text-sm font-medium mt-1">
+        Audio streams straight to the transcription service — we don't record or store it.
+      </p>
     </div>
-  </div>
-  <div class="flex items-center gap-2 shrink-0">
-    <button type="button"
-            data-mic-recorder-target="micButton"
-            data-action="mic-recorder#startMic"
-            class="px-5 py-3 rounded-xl bg-green-400 text-black font-black border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition cursor-pointer">
-      ● MIC
-    </button>
-    <button type="button"
-            data-mic-recorder-target="tabButton"
-            data-action="mic-recorder#startTab"
-            title="Share audio from another browser tab (Chrome/Edge)"
-            class="px-5 py-3 rounded-xl bg-white text-black font-black border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition cursor-pointer">
-      🔊 TAB
-    </button>
     <button type="button"
             data-mic-recorder-target="stopButton"
             data-action="mic-recorder#stop"
             hidden
-            class="px-6 py-3 rounded-xl bg-red-500 text-white font-black border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition cursor-pointer">
+            class="px-5 py-3 rounded-xl bg-red-500 text-white font-black border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition cursor-pointer shrink-0">
       ■ STOP
     </button>
   </div>
+
+  <div data-mic-recorder-target="status" hidden class="text-sm font-medium italic"></div>
+
+  <div data-mic-recorder-target="idleUI" class="flex flex-col sm:flex-row gap-3">
+    <button type="button"
+            data-mic-recorder-target="micButton"
+            data-action="mic-recorder#startMic"
+            class="flex-1 px-5 py-4 rounded-xl bg-green-400 text-black font-black border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition cursor-pointer text-left">
+      <div class="text-lg">🎤 Microphone</div>
+      <div class="text-xs font-medium mt-1 normal-case">Talk directly, or pick up a conversation in the room.</div>
+    </button>
+    <button type="button"
+            data-mic-recorder-target="tabButton"
+            data-action="mic-recorder#startTab"
+            class="flex-1 px-5 py-4 rounded-xl bg-white text-black font-black border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition cursor-pointer text-left">
+      <div class="text-lg">🔊 Browser tab</div>
+      <div class="text-xs font-medium mt-1 normal-case">
+        Start a YouTube video or podcast in another tab first. Then click here, pick that tab in the picker, and check <span class="underline">Share tab audio</span>.
+      </div>
+    </button>
+  </div>
+
+  <p data-mic-recorder-target="noTabNote" hidden class="text-xs font-medium italic">
+    Tab audio only works in Chrome, Edge, or Brave. In Safari or Firefox, use the microphone.
+  </p>
 </div>

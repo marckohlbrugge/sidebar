@@ -2,14 +2,14 @@
   <%= render "shared/brand" %>
   <div>
     <h1 class="text-4xl font-black tracking-tight mt-1">Start a session</h1>
-    <p class="text-gray-600 dark:text-gray-300 mt-2 font-medium">
-      You've been invited to try Armchair. Click below to start a microphone session — record a conversation, or play a YouTube video / livestream in another tab and let Armchair listen in.
+    <p class="text-gray-600 dark:text-gray-300 mt-2 font-medium leading-snug">
+      You've been invited to try Armchair. On the next screen you'll pick an audio source — your microphone, or a browser tab (for a YouTube video, podcast, or livestream playing elsewhere). Keep the session page open while it runs.
     </p>
   </div>
 
-  <div class="p-4 rounded-xl border-[3px] border-black dark:border-gray-100 bg-yellow-200 dark:bg-yellow-300 text-black text-sm font-medium">
-    <%= @invite.max_sessions - @invite.sessions_used %> of <%= @invite.max_sessions %> sessions left on this invite.<br>
-    Each session is capped at <%= @invite.max_turns_per_session %> turns.
+  <div class="p-4 rounded-xl bg-gray-100 dark:bg-gray-900/60 text-sm font-medium space-y-1">
+    <div><%= @invite.max_sessions - @invite.sessions_used %> of <%= @invite.max_sessions %> sessions left · capped at <%= @invite.max_turns_per_session %> turns each.</div>
+    <div class="text-gray-600 dark:text-gray-400">Audio streams straight to the transcription service — not recorded or stored.</div>
   </div>
 
   <%= button_to "START SESSION", invited_stream_sessions_path, method: :post,
