@@ -9,14 +9,17 @@
   <div class="absolute top-0 left-0 w-full p-4 rounded-2xl border-[3px] <%= persona_classes(persona, :border) %> <%= persona_classes(persona, :bg) %> shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.15)] transform-gpu backface-hidden">
     <div class="flex items-start gap-3">
       <%= image_tag "avatars/#{persona&.key}.png", class: "size-12 rounded-xl shrink-0 border-2 border-black dark:border-gray-100" if persona %>
-      <div class="text-base leading-snug">
+      <div class="text-base leading-snug flex-1 min-w-0"
+           data-controller="markdown"
+           data-markdown-text-value="<%= comment.body %>">
         <div class="font-black <%= persona_classes(persona, :text) %> mb-1 text-sm uppercase tracking-wide flex items-center gap-1.5">
           <%= persona&.display_name || comment.personality.humanize %>
           <% if comment.grounded? %>
             <span title="Grounded in a live web search" class="text-xs normal-case tracking-normal font-semibold opacity-70">🌐</span>
           <% end %>
         </div>
-        <div class="text-gray-900 dark:text-gray-100 font-medium"><%= comment.body %></div>
+        <div data-markdown-target="body" class="text-gray-900 dark:text-gray-100 font-medium"><%= comment.body %></div>
+        <ul data-markdown-target="sources" hidden class="mt-3 pt-3 border-t border-current/10 text-xs font-medium space-y-1"></ul>
       </div>
     </div>
   </div>
