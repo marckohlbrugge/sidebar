@@ -6,6 +6,7 @@ class StreamSession::BrowserIngest
   end
 
   def attach!
+    log "browser ws attached"
     StreamSession::Deepgram.ensure_reactor!
     EM.schedule { start_deepgram }
   end
@@ -15,22 +16,26 @@ class StreamSession::BrowserIngest
   def start_deepgram
     @deepgram = StreamSession::Deepgram.open_client
 
-    @deepgram.on(:open) { mark_running }
+    @deepgram.on(:open) { log "deepgram connected"; mark_running }
+    @deepgram.on(:error) { |event| log "deepgram error: #{event.message}" }
     @deepgram.on(:message) do |event|
       @turns.handle(event.data)
       close_for_invite_limit! if @turns.limit_reached?
     end
-    @deepgram.on(:close) { cleanup }
+    @deepgram.on(:close) do |event|
+      log "deepgram closed code=#{event.code} reason=#{event.reason.inspect}"
+      cleanup
+    end
 
     @browser.on(:message) do |event|
       frame = event.data
       EM.schedule { @deepgram&.send(frame) }
     end
 
-    @browser.on(:close) do
+    @browser.on(:close) do |event|
+      log "browser ws closed code=#{event.code} reason=#{event.reason.inspect}"
       EM.schedule do
         @deepgram&.send(StreamSession::Deepgram::CLOSE_MESSAGE) rescue nil
-        # Deepgram finalizes any in-flight utterance and then closes on its own.
       end
     end
   end
@@ -54,5 +59,9 @@ class StreamSession::BrowserIngest
     return if @closing_for_limit
     @closing_for_limit = true
     EM.schedule { @deepgram&.send(StreamSession::Deepgram::CLOSE_MESSAGE) rescue nil }
+  end
+
+  def log(msg)
+    Rails.logger.info "[browser_ingest session=#{@session.id}] #{msg}"
   end
 end
