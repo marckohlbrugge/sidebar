@@ -6,17 +6,27 @@ class StreamSession::BrowserIngest
   end
 
   def attach!
-    log "browser ws attached"
+    log "browser ws attached, reactor_running=#{EM.reactor_running?}"
     StreamSession::Deepgram.ensure_reactor!
-    EM.schedule { start_deepgram }
+    log "reactor ensured, scheduling deepgram connect"
+    EM.schedule do
+      begin
+        start_deepgram
+      rescue => e
+        log "start_deepgram raised: #{e.class} #{e.message} — #{e.backtrace&.first(3)&.join(' | ')}"
+        @browser&.close rescue nil
+      end
+    end
   end
 
   private
 
   def start_deepgram
+    log "opening deepgram client, api_key_present=#{StreamSession::Deepgram.api_key.present?}"
     @deepgram = StreamSession::Deepgram.open_client
+    log "deepgram client created, registering callbacks"
 
-    @deepgram.on(:open) { log "deepgram connected"; mark_running }
+    @deepgram.on(:open) { log "deepgram open"; mark_running }
     @deepgram.on(:error) { |event| log "deepgram error: #{event.message}" }
     @deepgram.on(:message) do |event|
       @turns.handle(event.data)
