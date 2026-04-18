@@ -1,37 +1,37 @@
-<div class="max-w-4xl mx-auto px-6 py-6 space-y-6">
+<div class="max-w-4xl mx-auto px-6 py-8 space-y-8">
   <%= render "shared/brand" %>
-  <header class="flex items-center justify-between">
-    <h1 class="text-4xl font-black tracking-tight">Manage</h1>
-    <div class="flex items-center gap-2">
-      <%= link_to "INVITES", manage_invites_path, class: "px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-black dark:text-white font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
-      <%= link_to "JOBS", manage_jobs_path, class: "px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-black dark:text-white font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
+  <header class="flex items-center justify-between gap-4 flex-wrap">
+    <h1 class="text-4xl font-black tracking-tight">Sessions</h1>
+    <div class="flex items-center gap-5 text-sm font-bold">
+      <%= link_to "Invites", manage_invites_path, class: "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" %>
+      <%= link_to "Jobs", manage_jobs_path, class: "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" %>
       <%= link_to "+ NEW SESSION", new_manage_stream_session_path, class: "px-5 py-2.5 rounded-xl bg-green-400 text-black font-black text-sm border-[3px] border-black dark:border-gray-100 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
     </div>
   </header>
 
   <% if @sessions.empty? %>
-    <div class="p-8 rounded-2xl border-[3px] border-dashed border-gray-300 dark:border-gray-700 text-center text-gray-500 dark:text-gray-400 font-medium">
+    <div class="p-8 rounded-2xl border border-dashed border-gray-300 dark:border-gray-800 text-center text-gray-500 dark:text-gray-500 font-medium">
       No sessions yet. Start one.
     </div>
   <% else %>
-    <ul class="space-y-4">
+    <ul class="divide-y divide-gray-200 dark:divide-gray-800 border-y border-gray-200 dark:border-gray-800">
       <% @sessions.each do |s| %>
-        <li class="flex items-center gap-3">
-          <%= link_to [ :manage, s ], class: "block flex-1 p-4 rounded-2xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.15)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" do %>
-            <div class="flex items-center justify-between gap-4">
-              <div class="min-w-0">
-                <div class="font-black text-base truncate">
-                  <% if s.source_microphone? %>🎤 Microphone<% else %><%= s.youtube_url %><% end %>
-                </div>
-                <div class="text-[10px] font-mono text-gray-500 dark:text-gray-400 uppercase mt-1"><%= s.source_kind %> · <%= s.status %> · <%= l s.created_at, format: :short %></div>
+        <li class="flex items-center gap-3 group">
+          <%= link_to [ :manage, s ], class: "flex-1 py-3 px-1 flex items-center justify-between gap-4 hover:bg-gray-50 dark:hover:bg-gray-900 -mx-1 px-2 rounded-lg transition" do %>
+            <div class="min-w-0">
+              <div class="font-bold text-base truncate">
+                <% if s.source_microphone? %>🎤 Microphone<% else %><%= s.youtube_url.sub(%r{^https?://(www\.)?}, "") %><% end %>
               </div>
-              <div class="flex items-center gap-3 text-xs font-bold text-gray-600 dark:text-gray-300 shrink-0">
-                <span class="px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-800"><%= s.turns.count %> turns</span>
-                <span class="px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-800"><%= s.transcript_events.count %> events</span>
+              <div class="text-[11px] font-mono text-gray-500 dark:text-gray-500 uppercase mt-0.5">
+                <%= s.source_kind %> · <%= s.status %> · <%= l s.created_at, format: :short %>
               </div>
             </div>
+            <div class="flex items-center gap-3 text-xs font-bold text-gray-500 dark:text-gray-500 shrink-0">
+              <span><%= s.turns.count %> turns</span>
+              <span><%= s.transcript_events.count %> events</span>
+            </div>
           <% end %>
-          <%= button_to "DELETE", manage_stream_session_path(s), method: :delete, data: { turbo_confirm: "Delete this session and all of its turns/comments/events?" }, class: "px-3 py-2 rounded-xl bg-red-500 text-white font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition shrink-0" %>
+          <%= button_to "Delete", manage_stream_session_path(s), method: :delete, data: { turbo_confirm: "Delete this session and all of its turns/comments/events?" }, class: "text-xs font-bold text-gray-400 hover:text-red-500 dark:text-gray-600 dark:hover:text-red-400 px-2 py-1 shrink-0 opacity-0 group-hover:opacity-100 transition" %>
         </li>
       <% end %>
     </ul>

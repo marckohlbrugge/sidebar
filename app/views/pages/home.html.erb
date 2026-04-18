@@ -1,99 +1,76 @@
-<div class="max-w-5xl mx-auto px-6 py-12 space-y-16">
-  <section class="space-y-4">
+<div class="max-w-3xl mx-auto px-6 py-16 space-y-20">
+  <section class="space-y-6">
     <div class="flex items-center gap-5">
-      <%= image_tag "icon.png", class: "size-24 rounded-2xl" %>
+      <%= image_tag "icon.png", class: "size-20 rounded-2xl" %>
       <h1 class="text-6xl font-black tracking-tight">Armchair</h1>
     </div>
-    <p class="text-xl font-medium text-gray-700 dark:text-gray-300 max-w-2xl leading-snug text-balance">
+    <p class="text-2xl font-medium text-gray-700 dark:text-gray-300 leading-snug text-balance">
       A real-time AI sidebar for live conversation. Armchair transcribes what it hears and a panel of four critics chime in — fact-checks, context, jokes, skepticism.
     </p>
-    <div class="flex flex-wrap items-center gap-2 pt-2">
-      <%= link_to "github.com/marckohlbrugge/armchair", "https://github.com/marckohlbrugge/armchair", class: "inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-900 dark:bg-gray-100 text-white dark:text-black font-black text-xs border-[3px] border-black dark:border-gray-100 shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition" %>
-      <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">open source</span>
+    <div class="flex items-center gap-4 pt-2 text-sm font-bold">
+      <%= link_to "https://github.com/marckohlbrugge/armchair", class: "inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-5 fill-current"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.08 1.85 1.25 1.85 1.25 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 016 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.65.25 2.87.12 3.17.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.62-5.49 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.83.58C20.56 21.8 24 17.3 24 12 24 5.37 18.63 0 12 0z"/></svg>
+        <span>GitHub</span>
+      <% end %>
+      <span class="text-gray-300 dark:text-gray-700">·</span>
+      <span class="text-gray-500 dark:text-gray-500 uppercase tracking-wider text-xs">Open source</span>
     </div>
   </section>
 
-  <section class="space-y-6">
+  <section class="space-y-8">
     <div>
-      <h2 class="text-3xl font-black tracking-tight">Meet the panel</h2>
-      <p class="text-gray-600 dark:text-gray-300 font-medium mt-1">Four personas. Each one picks their moments.</p>
+      <h2 class="text-3xl font-black tracking-tight">The panel</h2>
+      <p class="text-gray-600 dark:text-gray-400 font-medium mt-1">Four personas. Each one picks their moments.</p>
     </div>
 
-    <div class="grid md:grid-cols-2 gap-4">
+    <ul class="space-y-5">
       <% [
         [ Turn::Persona::FactChecker, "I'm Gary. I fact-check every specific claim with a real web search and tell you if it holds up.", "Fact checker" ],
         [ Turn::Persona::Context,     "Fred here. I drop the piece of history, etymology, or parallel that makes the moment land.", "Context" ],
         [ Turn::Persona::Comedy,      "Jackie. One-liners only. No setup — just the punchline.", "Comedy" ],
         [ Turn::Persona::Troll,       "I'm the skeptic. Your hot take is probably hype. Let me poke at it.", "Skeptic" ]
       ].each do |persona, line, role| %>
-        <div class="flex items-start gap-3">
-          <%= image_tag "avatars/#{persona.key}.png", class: "size-12 rounded-xl shrink-0 border-2 border-black dark:border-gray-100" %>
-          <div class="flex-1 min-w-0 space-y-1.5">
-            <div class="flex items-baseline gap-2">
-              <span class="font-black text-base"><%= persona.display_name %></span>
-              <span class="text-[10px] font-mono uppercase tracking-wider text-gray-500 dark:text-gray-400"><%= role %></span>
+        <li class="flex items-start gap-4">
+          <%= image_tag "avatars/#{persona.key}.png", class: "size-14 rounded-xl shrink-0" %>
+          <div class="flex-1 min-w-0 pt-1">
+            <div class="flex items-baseline gap-2 mb-1">
+              <span class="font-black text-lg"><%= persona.display_name %></span>
+              <span class="text-[10px] font-mono uppercase tracking-wider text-gray-500 dark:text-gray-500"><%= role %></span>
             </div>
-            <div class="<%= persona_classes(persona, :bg) %> border-2 <%= persona_classes(persona, :border) %> rounded-xl px-3 py-2 text-sm font-medium <%= persona_classes(persona, :text) %> leading-snug">
-              <%= line %>
-            </div>
+            <p class="text-gray-700 dark:text-gray-300 font-medium leading-snug"><%= line %></p>
           </div>
-        </div>
+        </li>
       <% end %>
-    </div>
-  </section>
-
-  <section class="space-y-6">
-    <div>
-      <h2 class="text-3xl font-black tracking-tight">How it works</h2>
-      <p class="text-gray-600 dark:text-gray-300 font-medium mt-1">Two ways to feed it audio.</p>
-    </div>
-
-    <div class="grid md:grid-cols-2 gap-4">
-      <div class="p-5 rounded-2xl border-[3px] border-black dark:border-gray-100 bg-yellow-200 dark:bg-yellow-300 text-black space-y-2">
-        <div class="flex items-center gap-2">
-          <span class="text-2xl">🎤</span>
-          <h3 class="font-black text-lg">Browser mic</h3>
-        </div>
-        <p class="text-sm font-medium leading-snug">
-          Record from this laptop. Play a YouTube video or live stream in another tab and let Armchair eavesdrop, or bring it into a real-life conversation with friends — whatever the mic picks up, the panel reacts to.
-        </p>
-      </div>
-
-      <div class="p-5 rounded-2xl border-[3px] border-black dark:border-gray-100 bg-pink-200 dark:bg-pink-300 text-black space-y-2">
-        <div class="flex items-center gap-2">
-          <span class="text-2xl">🔗</span>
-          <h3 class="font-black text-lg">Stream URL</h3>
-        </div>
-        <p class="text-sm font-medium leading-snug">
-          Point it at an HLS <code class="text-xs font-mono">.m3u8</code>, an Icecast station, or any HTTP audio stream. Armchair opens it server-side, no browser tab required.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="space-y-6">
-    <div>
-      <h2 class="text-3xl font-black tracking-tight">What it actually does</h2>
-    </div>
-
-    <ul class="grid md:grid-cols-2 gap-3 text-sm font-medium">
-      <li class="p-4 rounded-xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.15)]">
-        <span class="font-black">Transcribes live</span> — Deepgram Nova-3 turns audio into turns of speech as you go.
-      </li>
-      <li class="p-4 rounded-xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.15)]">
-        <span class="font-black">Picks the right voice</span> — a gatekeeper decides which persona (if any) should chime in on each turn.
-      </li>
-      <li class="p-4 rounded-xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.15)]">
-        <span class="font-black">Searches the web</span> — Gary actually calls a search tool to verify specific claims, not just vibes.
-      </li>
     </ul>
   </section>
 
-  <footer class="pt-8 border-t-2 border-dashed border-gray-200 dark:border-gray-800 flex flex-wrap items-center justify-between gap-3 text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-    <div class="flex items-center gap-3">
-      <%= link_to "github", "https://github.com/marckohlbrugge/armchair", class: "hover:text-gray-900 dark:hover:text-white" %>
-      <%= link_to "manage", manage_stream_sessions_path, class: "hover:text-gray-900 dark:hover:text-white" %>
+  <section class="space-y-8">
+    <div>
+      <h2 class="text-3xl font-black tracking-tight">How to use it</h2>
+      <p class="text-gray-600 dark:text-gray-400 font-medium mt-1">Two ways to feed it audio.</p>
     </div>
+
+    <div class="grid md:grid-cols-2 gap-5">
+      <div class="space-y-2">
+        <div class="text-3xl">🎤</div>
+        <h3 class="font-black text-xl">Browser mic</h3>
+        <p class="text-gray-700 dark:text-gray-300 font-medium leading-snug">
+          Record from this laptop. Play a podcast or stream in another tab and let Armchair eavesdrop — or use it in a real-life conversation.
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <div class="text-3xl">🔗</div>
+        <h3 class="font-black text-xl">Stream URL</h3>
+        <p class="text-gray-700 dark:text-gray-300 font-medium leading-snug">
+          Point it at an HLS <code class="font-mono text-sm">.m3u8</code>, an Icecast station, or any HTTP audio stream. Armchair opens it server-side.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="pt-10 flex flex-wrap items-center justify-between gap-3 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-500">
+    <%= link_to "manage", manage_stream_sessions_path, class: "hover:text-gray-900 dark:hover:text-white" %>
     <div>A <%= link_to "@marckohlbrugge", "https://x.com/marckohlbrugge", class: "hover:text-gray-900 dark:hover:text-white" %> project.</div>
   </footer>
 </div>
