@@ -30,9 +30,12 @@ ENV RAILS_ENV="production" \
 # Throw-away build stage to reduce size of final image
 FROM base AS build
 
-# Install packages needed to build gems
+# Install packages needed to build gems. libssl-dev is required so
+# EventMachine's native extension compiles with OpenSSL support — without
+# it, any wss:// connection (e.g. Deepgram) crashes the Ruby process with
+# "Encryption not available on this event-machine".
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libvips libyaml-dev pkg-config && \
+    apt-get install --no-install-recommends -y build-essential git libssl-dev libvips libyaml-dev pkg-config && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install application gems
