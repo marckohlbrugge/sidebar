@@ -13,6 +13,8 @@ module StreamSession::Deepgram
     smart_format: true
   }
 
+  CLOSE_MESSAGE = { type: "CloseStream" }.to_json
+
   def self.open_client
     Faye::WebSocket::Client.new(
       "#{URL}?#{PARAMS.to_query}",

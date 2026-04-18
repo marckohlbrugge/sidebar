@@ -1,5 +1,5 @@
 class Turn::Gatekeeper
-  MODEL = "claude-haiku-4-5"
+  MODEL = "grok-4-1-fast-non-reasoning"
   CONTEXT_TURNS = 3
 
   class Schema < RubyLLM::Schema

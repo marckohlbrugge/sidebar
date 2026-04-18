@@ -13,7 +13,7 @@ system_prompt = <<~PROMPT
   - FACT_CHECK: contains a verifiable factual claim
 PROMPT
 
-response = RubyLLM.chat(model: "claude-haiku-4-5")
+response = RubyLLM.chat(model: "grok-4-1-fast-non-reasoning")
   .with_instructions(system_prompt)
   .with_schema(GateDecisionSchema.new)
   .ask(sample_turn)

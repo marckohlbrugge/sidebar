@@ -40,6 +40,7 @@ class StreamSession::Ingest
 
   def open_audio_pipe(url)
     cmd = %(ffmpeg -hide_banner -nostdin -loglevel fatal \
+      -user_agent "Mozilla/5.0" \
       -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5 \
       -i #{url.shellescape} \
       -f s16le -acodec pcm_s16le -ac 1 -ar 16000 pipe:1).gsub(/\s+/, " ")
@@ -51,7 +52,7 @@ class StreamSession::Ingest
       while (chunk = audio_io.read(3200))
         EM.schedule { ws.send(chunk) }
       end
-      EM.schedule { ws.send({ type: "CloseStream" }.to_json) }
+      EM.schedule { ws.send(StreamSession::Deepgram::CLOSE_MESSAGE) }
     end
   end
 

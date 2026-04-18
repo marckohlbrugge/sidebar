@@ -24,13 +24,13 @@ Inspired by [a tweet from @twistartups](https://x.com/twistartups/status/2044437
 - **Solid Queue** — background jobs, running inside Puma via plugin
 - **Solid Cable** — Turbo broadcast channel backed by the DB
 - **Deepgram Nova-3** — real-time speech-to-text over WebSocket
-- **RubyLLM** — thin Ruby abstraction over Anthropic's Claude (Haiku for gating, Sonnet for commentary)
-- **yt-dlp + ffmpeg** — pipe live YouTube audio into Deepgram
+- **RubyLLM** — thin Ruby abstraction over xAI's Grok (`grok-4-1-fast-non-reasoning` for gating, `grok-4.20-0309-non-reasoning` for commentary, `grok-4.20-0309-reasoning` + built-in `web_search` for fact-checking via xAI's Responses API)
+- **ffmpeg** — pipe live audio into Deepgram's WebSocket
 - **Kamal** — container-based deploy
 
 ## Running locally
 
-Requires Ruby 3.4, `yt-dlp`, `ffmpeg`, and API keys for Deepgram and Anthropic.
+Requires Ruby 3.4, `ffmpeg`, a Deepgram API key (STT), and an xAI API key (chat + web search).
 
 ```bash
 bin/setup
@@ -38,12 +38,12 @@ bin/setup
 EDITOR="code --wait" bin/rails credentials:edit --environment development
 # add:
 #   deepgram_api_key: ...
-#   anthropic_api_key: ...
+#   xai_api_key: ...
 
 bin/dev
 ```
 
-Alternatively, self-hosters can set `DEEPGRAM_API_KEY` and `ANTHROPIC_API_KEY` as environment variables instead of using Rails credentials.
+Alternatively, self-hosters can set `DEEPGRAM_API_KEY` and `XAI_API_KEY` as environment variables instead of using Rails credentials.
 
 Visit `http://localhost:3000`, head to `/manage/sessions/new`, paste a YouTube URL (live or recorded), and watch the personas chime in.
 
@@ -54,7 +54,7 @@ The included `Dockerfile` bundles `yt-dlp` and `ffmpeg`, so Kamal deploys work o
 ```yaml
 # config/credentials/production.yml.enc
 deepgram_api_key: ...
-anthropic_api_key: ...
+xai_api_key: ...
 manage:
   username: admin
   password: <strong password>
@@ -64,11 +64,11 @@ manage:
 
 ## How it works
 
-1. **Ingest** — `yt-dlp --get-id` resolves the stream URL; `ffmpeg` decodes the audio to 16kHz mono PCM and pipes it into Deepgram's WebSocket.
+1. **Ingest** — `ffmpeg` decodes stream audio to 16kHz mono PCM and pipes it into Deepgram's WebSocket.
 2. **Transcript events** — raw Deepgram payloads persist immediately (`TranscriptEvent`) for replay fidelity.
 3. **Turn building** — `is_final` segments accumulate until a natural sentence boundary, closing into a `Turn` of ≥8 words (80 max).
-4. **Gate** — one Claude Haiku call per turn picks a persona: `wait | none | fact_checker | context | comedy | troll` with reasoning.
-5. **Reaction** — the chosen persona runs a Claude Sonnet call with context from recent turns and its own recent remarks; can abstain with `PASS`.
+4. **Gate** — one fast Grok call per turn picks a persona: `wait | none | fact_checker | context | comedy | troll` with reasoning.
+5. **Reaction** — the chosen persona runs a Grok call with context from recent turns and its own recent remarks; FactChecker additionally goes through xAI's Responses API with the built-in `web_search` tool. Any persona can abstain with `PASS`.
 6. **Cooldown** — a persona that just spoke is skipped for 3 turns even if re-selected.
 7. **Live UI** — Turbo Streams push every turn and comment into a single CSS grid; sticky positioning keeps the latest comment pinned.
 

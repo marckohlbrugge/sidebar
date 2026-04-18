@@ -29,7 +29,7 @@ class StreamSession::BrowserIngest
 
     @browser.on(:close) do
       EM.schedule do
-        @deepgram&.send({ type: "CloseStream" }.to_json) rescue nil
+        @deepgram&.send(StreamSession::Deepgram::CLOSE_MESSAGE) rescue nil
         # Deepgram finalizes any in-flight utterance and then closes on its own.
       end
     end
@@ -53,6 +53,6 @@ class StreamSession::BrowserIngest
   def close_for_invite_limit!
     return if @closing_for_limit
     @closing_for_limit = true
-    EM.schedule { @deepgram&.send({ type: "CloseStream" }.to_json) rescue nil }
+    EM.schedule { @deepgram&.send(StreamSession::Deepgram::CLOSE_MESSAGE) rescue nil }
   end
 end

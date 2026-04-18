@@ -33,7 +33,7 @@ Rails.application.routes.draw do
 
   namespace :manage do
     root to: "stream_sessions#index"
-    resources :stream_sessions, path: "sessions" do
+    resources :stream_sessions, only: [ :index, :show, :new, :create, :destroy ], path: "sessions" do
       resource :ingest, only: :destroy
     end
     resources :invites do

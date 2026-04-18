@@ -9,6 +9,7 @@ class StreamSession < ApplicationRecord
   enum :source_kind, { url: "url", microphone: "microphone" }, default: :url, validate: true, prefix: :source
 
   validates :youtube_url, presence: true, if: :source_url?
+  before_validation :normalize_youtube_url, if: :source_url?
 
   def to_param
     token
@@ -55,5 +56,13 @@ class StreamSession < ApplicationRecord
     true
   rescue Errno::ESRCH
     false
+  end
+
+  private
+
+  def normalize_youtube_url
+    return if youtube_url.blank?
+    youtube_url.strip!
+    self.youtube_url = "https://#{youtube_url}" unless youtube_url.match?(%r{\Ahttps?://}i)
   end
 end

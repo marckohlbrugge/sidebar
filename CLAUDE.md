@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this app is
 
-Armchair listens to a live or recorded YouTube stream, transcribes it with Deepgram Nova-3, and interleaves commentary from four LLM personas (Gary the producer, Fred the context guy, Jackie the comedy writer, Troll the cynic) next to the transcript. See `README.md` and `docs/prd.md` for product context.
+Armchair listens to a live or recorded YouTube stream, transcribes it with Deepgram Nova-3, and interleaves commentary from four LLM personas (Gary the producer, Fred the context guy, Jackie the comedy writer, Troll the cynic) next to the transcript. Deepgram handles STT; xAI's Grok handles all LLM work. See `README.md` and `docs/prd.md` for product context.
 
 ## Running locally
 
@@ -13,7 +13,7 @@ bin/dev                                 # Puma + Tailwind watch + Solid Queue (a
 bin/rails runner script/ingest.rb <id>  # Runs ingest against a StreamSession id — normally spawned by the app, handy for debugging
 ```
 
-Credentials live in `config/credentials.yml.enc` (dev and prod). Either edit them with `EDITOR="…" bin/rails credentials:edit` or set `DEEPGRAM_API_KEY` / `ANTHROPIC_API_KEY` environment variables. In production, `manage.username` + `manage.password` gate the `/manage/*` routes via HTTP basic auth — without them set, prod admin refuses everyone.
+Credentials live in `config/credentials.yml.enc` (dev and prod). Either edit them with `EDITOR="…" bin/rails credentials:edit` or set `DEEPGRAM_API_KEY` and `XAI_API_KEY` as environment variables. In production, `manage.username` + `manage.password` gate the `/manage/*` routes via HTTP basic auth — without them set, prod admin refuses everyone.
 
 External binary required on PATH for URL-source mode: `ffmpeg`. The production Dockerfile installs it.
 
@@ -25,9 +25,9 @@ No tests in this repo yet.
 
 1. **`StreamSession::Spawner#spawn!`** — the only thing that runs in the web request. Just does `Process.spawn` with `pgroup: true` and `/dev/null` stdin, records the pid. Do **not** add yt-dlp calls here; they're slow enough to time out the request.
 2. **`script/ingest.rb`** — entry point for the spawned subprocess. Calls `StreamSession::Ingest#run`.
-3. **`StreamSession::Ingest#run`** — detects live vs recorded via `YtDlp.live?`, resolves video id + stream URL, opens a Deepgram WebSocket (`faye-websocket` + `EventMachine`), pipes `ffmpeg` output into it. Uses `-re` for live sources (real-time pacing) and no `-re` for recorded (as-fast-as-possible). Every Deepgram frame is persisted via `TranscriptEvent.from_deepgram` and accumulated into the current turn buffer.
+3. **`StreamSession::Ingest#run`** — opens a Deepgram WebSocket (`faye-websocket` + `EventMachine`, see `StreamSession::Deepgram`), pipes `ffmpeg` output into it as 16 kHz PCM16 LE. Every Deepgram frame is persisted via `TranscriptEvent.from_deepgram` and accumulated into the current turn buffer.
 4. **Turn building** — turn closes when the buffer has ≥ `MIN_WORDS_PER_TURN` words and Deepgram's `speech_final` fires, or when it hits `MAX_WORDS_PER_TURN`. `Turn#audio_start_ms` / `audio_end_ms` come from Deepgram's `start`/`duration` fields so replay can sync to video playback time.
-5. **`Turn#after_create_commit` → `AnalyzeTurnJob`** — runs the gatekeeper, which is one Claude Haiku call. The gate's `action` is directly the persona key (`wait | none | fact_checker | context | comedy | troll`), so there's no separate router — the LLM casts the scene.
+5. **`Turn#after_create_commit` → `AnalyzeTurnJob`** — runs the gatekeeper, which is one fast Grok call (`grok-4-1-fast-non-reasoning`). The gate's `action` is directly the persona key (`wait | none | fact_checker | context | comedy | troll`), so there's no separate router — the LLM casts the scene.
 6. **`AnalyzeTurnJob`** — enqueues `PersonaReactionJob` for the chosen persona (skipping if the persona just spoke in the last 3 turns, or if session is kill-switched, or over the 500-call cap). Each `Turn::Persona::*` subclass carries its prompt/model/color via `class_attribute`.
 7. **`Comment#broadcasts_to`** — appends to the `:timeline` Turbo stream. The persona's bg classes ride on the comment's `data-highlight-classes` so the front-end can paint the paired turn without the server needing to re-broadcast it.
 
