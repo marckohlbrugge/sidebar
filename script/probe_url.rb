@@ -15,13 +15,17 @@ source_url = ARGV[0] or abort "Usage: bin/rails runner script/probe_url.rb <url>
 
 def resolve(url)
   puts "[probe] resolving with yt-dlp..."
-  resolved = IO.popen([ "yt-dlp", "-g", "--no-warnings", url ], err: %i[child out], &:read).strip
-  if $?.success? && resolved.start_with?("http")
-    stream_url = resolved.lines.first.strip
-    puts "[probe] yt-dlp resolved → #{stream_url[0, 120]}..."
-    stream_url
+  stdout, stderr, status = nil, nil, nil
+  require "open3"
+  stdout, stderr, status = Open3.capture3("yt-dlp", "-g", "--no-warnings", url)
+  http_line = stdout.lines.map(&:strip).find { |l| l.start_with?("http") }
+  if status.success? && http_line
+    puts "[probe] yt-dlp resolved → #{http_line[0, 120]}..."
+    http_line
   else
-    puts "[probe] yt-dlp could not resolve — using raw URL"
+    puts "[probe] yt-dlp failed (exit=#{status.exitstatus}) — using raw URL"
+    puts "[probe]   stdout: #{stdout.inspect[0, 300]}"
+    puts "[probe]   stderr: #{stderr.inspect[0, 300]}"
     url
   end
 rescue Errno::ENOENT
