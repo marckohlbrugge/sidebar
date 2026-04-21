@@ -11,12 +11,17 @@ class Invited::StreamSessionsController < ApplicationController
       return
     end
 
-    @session = StreamSession.create!(source_kind: :microphone, invite: @invite)
+    @session = StreamSession.create!(session_params.merge(invite: @invite))
     @invite.increment!(:sessions_used)
+    @session.spawn_ingest! if @session.source_url?
     redirect_to @session
   end
 
   private
+
+  def session_params
+    params.expect(stream_session: [ :source_kind, :youtube_url ])
+  end
 
   def require_invite!
     @invite = Invite.find_by(id: cookies.signed[:invite_id])
