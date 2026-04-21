@@ -1,3 +1,5 @@
+require "open3"
+
 class StreamSession::Ingest
   def initialize(stream_session)
     @session = stream_session
@@ -8,6 +10,8 @@ class StreamSession::Ingest
     @session.update!(status: "running", started_at: Time.current)
     abort_session!("session has no stream URL") if @session.youtube_url.blank?
 
+    stream_url = resolve_stream_url(@session.youtube_url)
+
     EM.run do
       ws = StreamSession::Deepgram.open_client
       audio_io = nil
@@ -15,7 +19,7 @@ class StreamSession::Ingest
 
       ws.on :open do
         log "deepgram connected, starting ffmpeg"
-        audio_io = open_audio_pipe(@session.youtube_url)
+        audio_io = open_audio_pipe(stream_url)
         pump = start_pump(ws, audio_io)
       end
 
@@ -37,6 +41,31 @@ class StreamSession::Ingest
   end
 
   private
+
+  # Sites like X/Twitter serve signed, short-lived HLS URLs that have to be
+  # fetched fresh from the machine doing the ingesting (JWTs are IP-pinned).
+  # yt-dlp's `-g` prints the direct stream URL; we fall back to the raw input
+  # if yt-dlp isn't available or doesn't recognize the site, so pasting a
+  # plain .m3u8/Icecast URL still works without a round-trip.
+  def resolve_stream_url(url)
+    stdout, stderr, status = Open3.capture3(
+      "yt-dlp", "-g", "--no-warnings",
+      "--extractor-retries", "5",
+      "--sleep-requests", "2",
+      url
+    )
+    http_line = stdout.lines.map(&:strip).find { |l| l.start_with?("http") }
+    if status.success? && http_line
+      log "yt-dlp resolved stream URL"
+      http_line
+    else
+      log "yt-dlp did not resolve (exit=#{status.exitstatus}): #{stderr.lines.last&.strip} — using raw URL"
+      url
+    end
+  rescue Errno::ENOENT
+    log "yt-dlp not on PATH — using raw URL"
+    url
+  end
 
   def open_audio_pipe(url)
     cmd = %(ffmpeg -hide_banner -nostdin -loglevel fatal \

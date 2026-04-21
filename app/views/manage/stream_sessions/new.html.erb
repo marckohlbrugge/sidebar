@@ -3,12 +3,12 @@
   <div>
     <%= link_to "← back", manage_stream_sessions_path, class: "text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" %>
     <h1 class="text-4xl font-black tracking-tight mt-1">New Session</h1>
-    <p class="text-gray-600 dark:text-gray-300 mt-2 font-medium">Record from this browser's microphone, or paste a public audio stream URL (HLS .m3u8, Icecast, any HTTP audio).</p>
+    <p class="text-gray-600 dark:text-gray-300 mt-2 font-medium">Record from this browser's microphone, or paste a URL — a direct audio stream (HLS .m3u8, Icecast) or any page yt-dlp can handle (X/Twitter Spaces, YouTube, Twitch, …).</p>
   </div>
 
   <%= form_with model: @session, url: manage_stream_sessions_path, class: "space-y-4", data: { controller: "source-picker" } do |f| %>
     <div class="grid grid-cols-2 gap-3">
-      <% [[ "microphone", "🎤 Microphone", "Record from this browser." ], [ "url", "🔗 Stream URL", "HLS, Icecast, HTTP audio." ]].each do |value, label, hint| %>
+      <% [[ "microphone", "🎤 Microphone", "Record from this browser." ], [ "url", "🔗 Stream URL", "HLS, Icecast, or any yt-dlp source." ]].each do |value, label, hint| %>
         <label class="flex items-start gap-3 p-4 rounded-xl border-[3px] border-black dark:border-gray-100 bg-white dark:bg-gray-900 shadow-[3px_3px_0_0_rgba(0,0,0,1)] dark:shadow-[3px_3px_0_0_rgba(255,255,255,0.15)] cursor-pointer has-[:checked]:bg-yellow-200 dark:has-[:checked]:bg-yellow-300 has-[:checked]:text-black">
           <%= f.radio_button :source_kind, value, checked: (@session.source_kind || "url") == value, data: { action: "change->source-picker#switch" }, class: "mt-1" %>
           <div>
