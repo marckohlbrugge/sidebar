@@ -19,6 +19,7 @@ def resolve(url)
   require "open3"
   stdout, stderr, status = Open3.capture3(
     "yt-dlp", "-g", "--no-warnings",
+    "-f", "bestaudio/best",
     "--extractor-retries", "5",
     "--sleep-requests", "2",
     url
