@@ -17,7 +17,12 @@ def resolve(url)
   puts "[probe] resolving with yt-dlp..."
   stdout, stderr, status = nil, nil, nil
   require "open3"
-  stdout, stderr, status = Open3.capture3("yt-dlp", "-g", "--no-warnings", url)
+  stdout, stderr, status = Open3.capture3(
+    "yt-dlp", "-g", "--no-warnings",
+    "--extractor-retries", "5",
+    "--sleep-requests", "2",
+    url
+  )
   http_line = stdout.lines.map(&:strip).find { |l| l.start_with?("http") }
   if status.success? && http_line
     puts "[probe] yt-dlp resolved → #{http_line[0, 120]}..."
